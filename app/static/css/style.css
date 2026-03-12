@@ -1,0 +1,245 @@
+:root {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --primary: #005f86;
+    /* Baltic Blue */
+    --accent: #f1be48;
+    /* Sunflower Gold */
+    --text: #f8fafc;
+    --text-muted: #968c83;
+    /* Grey Olive */
+    --danger: #e04e39;
+    /* Cinnabar */
+    --success: #44883e;
+    /* Forest Green */
+    --border: #334155;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    line-height: 1.5;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    color: var(--accent);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    border: 1px solid var(--border);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.poll-option {
+    background: #334155;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.poll-option:hover {
+    background: #475569;
+    border-color: var(--primary);
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn:active {
+    opacity: 0.8;
+}
+
+/* Progress Bar */
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background: var(--border);
+    border-radius: 10px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #38bdf8);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ideas List (Display) */
+.ideas-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.ideas-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ideas-list::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 10px;
+}
+
+.more-indicator {
+    text-align: center;
+    color: var(--primary);
+    font-size: 0.875rem;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+/* Display Board Layout */
+.display-wrapper {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 30px;
+    padding: 30px;
+    height: 100vh;
+}
+
+.display-sidebar {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.display-main {
+    overflow-y: auto;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.display-sidebar img {
+    width: 280px;
+    height: 280px;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.event-name-large {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 30px;
+}
+
+@media (max-width: 1200px) {
+    .display-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .display-sidebar {
+        height: auto;
+    }
+
+    .chart-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Admin Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #334155;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.sortable-ghost {
+    opacity: 0.4;
+    background: var(--primary) !important;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+}
