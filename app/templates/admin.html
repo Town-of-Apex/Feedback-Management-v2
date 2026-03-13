@@ -15,7 +15,7 @@
         td {
             text-align: left;
             padding: 12px;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid var(--border);
         }
 
         input,
@@ -24,15 +24,15 @@
             width: 100%;
             padding: 8px;
             margin: 4px 0;
-            background: #334155;
-            border: 1px solid #475569;
-            color: white;
+            background: var(--idea-bubble-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
             border-radius: 4px;
         }
 
         .btn-active {
-            background: #4ade80;
-            color: #000;
+            background: var(--success);
+            color: #fff;
             padding: 4px 8px;
             width: auto;
             border: none;
@@ -41,8 +41,8 @@
         }
 
         .btn-inactive {
-            background: #94a3b8;
-            color: #000;
+            background: var(--text-muted);
+            color: #fff;
             padding: 4px 8px;
             width: auto;
             border: none;
@@ -51,7 +51,7 @@
         }
 
         .btn-delete {
-            background: #ef4444;
+            background: var(--danger);
             color: #fff;
             padding: 4px 8px;
             width: auto;

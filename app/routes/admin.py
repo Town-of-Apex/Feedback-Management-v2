@@ -15,7 +15,7 @@ def dashboard():
 
 @admin_bp.route('/login', methods=['POST'])
 def login():
-    if request.form.get('password') == os.getenv('ADMIN_PASSWORD'):
+    if request.form.get('password') == os.getenv('ADMIN_PASSWORD', '').strip('"\'  '):
         session['is_admin'] = True
         return redirect('/admin')
     return "Unauthorized", 401

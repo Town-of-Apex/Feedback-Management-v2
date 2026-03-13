@@ -19,7 +19,8 @@ def reset_session():
 @public_bp.route('/')
 def index():
     event_name = os.getenv('EVENT_NAME', 'Civic Feedback Event')
-    return render_template('index.html', event_name=event_name)
+    event_key = os.getenv('EVENT_KEY', '').strip('"\'  ')
+    return render_template('index.html', event_name=event_name, event_key=event_key)
 
 @public_bp.route('/questions')
 def get_questions():
@@ -37,7 +38,7 @@ def get_questions():
 def submit_response():
     data = request.json
     key = request.args.get('key')
-    if key != os.getenv('EVENT_KEY'):
+    if key != os.getenv('EVENT_KEY', '').strip('"\' '):
         return jsonify({'error': 'Invalid event key'}), 403
 
     # Submission allowed even if text has profanity, but it won't be displayed on results

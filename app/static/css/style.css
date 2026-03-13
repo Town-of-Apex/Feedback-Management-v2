@@ -1,245 +1,314 @@
+/*
+ * ═══════════════════════════════════════════════════════
+ *  COLOR SYSTEM — Easy to update!
+ *  All color decisions for the entire app live here.
+ *  See the CHART PALETTE in charts.js / slideshow.js
+ *  for bar/chart-specific colors.
+ * ═══════════════════════════════════════════════════════
+ */
+
 :root {
-    --bg: #0f172a;
-    --card-bg: #1e293b;
-    --primary: #005f86;
-    /* Baltic Blue */
-    --accent: #f1be48;
-    /* Sunflower Gold */
-    --text: #f8fafc;
-    --text-muted: #968c83;
-    /* Grey Olive */
-    --danger: #e04e39;
-    /* Cinnabar */
-    --success: #44883e;
-    /* Forest Green */
-    --border: #334155;
+  /* ── Page Backgrounds ───────────────────────────────
+     * --bg:        The main page background
+     * --card-bg:   Cards, panels, and chart containers
+     * --sidebar-bg: The QR-code sidebar on display views
+     *              (can differ from --card-bg for contrast)
+     */
+  --bg: #f0ece4; /* Warm paper white — readable outdoors */
+  --card-bg: #ffffff; /* Pure white cards */
+  --sidebar-bg: var(--card-bg); /* Sidebar matches cards — change to a hex to make it different */
+
+  /* ── Brand / Accent Colors ──────────────────────────
+     * --primary:  Main brand color (buttons, links, highlights)
+     * --accent:   Secondary pop color (headings, active dots)
+     */
+  --primary: #1b7f74; /* Teal green */
+  --accent: #e07b39; /* Warm burnt orange */
+
+  /* ── Text Colors ────────────────────────────────────
+     * --text:       Default body text
+     * --text-muted: Subtitles, captions, secondary info
+     * --text-on-sidebar: Text rendered on top of --sidebar-bg
+     */
+  --text: #1a1a2e; /* Near-black — great contrast on light bg */
+  --text-muted: #6b7280; /* Medium grey */
+  --text-on-sidebar: var(--text); /* Sidebar text — matches --text when sidebar matches --card-bg */
+
+  /* ── Borders & Dividers ─────────────────────────────
+     * --border: Lines between elements, card outlines
+     */
+  --border: #d6cfc4; /* Warm light grey */
+
+  /* ── Semantic Colors ────────────────────────────────
+     * Used for status messages, alerts, etc.
+     */
+  --danger: #dc2626; /* Red */
+  --success: #16a34a; /* Green */
+
+  /* ── Ideas / Text Response Cards (display board) ───
+     * Background for individual submitted text response bubbles
+     */
+  --idea-bubble-bg: #f3ede4; /* Slightly warmer than --bg */
 }
 
+/*
+ * ═══════════════════════════════════════════════════════
+ *  BASE STYLES
+ * ═══════════════════════════════════════════════════════
+ */
+
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    margin: 0;
-    line-height: 1.5;
-    -webkit-tap-highlight-color: transparent;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  margin: 0;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 header {
-    text-align: center;
-    margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 h1 {
-    font-size: 1.5rem;
-    margin-bottom: 5px;
-    color: var(--accent);
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+  color: var(--accent);
+}
+
+h3 {
+  color: var(--text);
 }
 
 .card {
-    background: var(--card-bg);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    border: 1px solid var(--border);
-    animation: slideUp 0.3s ease-out;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+  animation: slideUp 0.3s ease-out;
+  min-width: 0; /* Prevents content from expanding the grid cell */
 }
 
 @keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .poll-option {
-    background: #334155;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: all 0.2s;
+  background: var(--idea-bubble-bg);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  color: var(--text);
 }
 
 .poll-option:hover {
-    background: #475569;
-    border-color: var(--primary);
+  background: #e5ddd2;
+  border-color: var(--primary);
 }
 
 .btn {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
 .btn-primary {
-    background: var(--primary);
-    color: white;
+  background: var(--primary);
+  color: white;
 }
 
 .btn:active {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 /* Progress Bar */
 .progress-container {
-    width: 100%;
-    height: 8px;
-    background: var(--border);
-    border-radius: 10px;
-    margin: 20px 0;
-    overflow: hidden;
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 10px;
+  margin: 20px 0;
+  overflow: hidden;
 }
 
 .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), #38bdf8);
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Ideas List (Display) */
 .ideas-list {
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
 }
 
 .ideas-list::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .ideas-list::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 10px;
+  background: var(--border);
+  border-radius: 10px;
 }
 
 .more-indicator {
-    text-align: center;
-    color: var(--primary);
-    font-size: 0.875rem;
-    margin-top: 10px;
-    font-weight: 600;
+  text-align: center;
+  color: var(--primary);
+  font-size: 0.875rem;
+  margin-top: 10px;
+  font-weight: 600;
 }
 
-/* Display Board Layout */
+/* ═══════════════════════════════════════════════════════
+ *  DISPLAY BOARD LAYOUT (shared by /display and /display/slideshow)
+ * ═══════════════════════════════════════════════════════ */
+
 .display-wrapper {
-    display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: 30px;
-    padding: 30px;
-    height: 100vh;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  padding: 24px;
+  height: 100vh;
 }
 
 .display-sidebar {
-    background: var(--card-bg);
-    border-radius: 12px;
-    padding: 40px 20px;
-    text-align: center;
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  background: var(--sidebar-bg); /* Uses the dedicated sidebar color */
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.15);
+  color: var(--text-on-sidebar);
+}
+
+/* Sidebar overrides — if --sidebar-bg is dark, set --text-on-sidebar to a light hex value */
+.display-sidebar p {
+    color: var(--text-on-sidebar);
+    opacity: 0.8;
 }
 
 .display-main {
-    overflow-y: auto;
+  overflow-y: auto;
 }
 
 .chart-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
 .display-sidebar img {
-    width: 280px;
-    height: 280px;
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-    margin: 20px 0;
+  width: 230px;
+  height: 230px;
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  margin: 16px 0;
 }
 
 .event-name-large {
-    font-size: 2rem;
-    color: var(--accent);
-    margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.display-sidebar #tunnel-url {
+    color: var(--primary);
 }
 
 @media (max-width: 1200px) {
-    .display-wrapper {
-        grid-template-columns: 1fr;
-    }
+  .display-wrapper {
+    grid-template-columns: 1fr;
+  }
 
-    .display-sidebar {
-        height: auto;
-    }
+  .display-sidebar {
+    height: auto;
+  }
 
-    .chart-grid {
-        grid-template-columns: 1fr;
-    }
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Admin Styles */
+/* ═══════════════════════════════════════════════════════
+ *  ADMIN STYLES
+ * ═══════════════════════════════════════════════════════ */
+
 table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 th,
 td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
 }
 
 input,
 select,
 textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: #334155;
-    color: white;
-    margin-bottom: 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--idea-bubble-bg);
+  color: var(--text);
+  margin-bottom: 10px;
 }
 
 .sortable-ghost {
-    opacity: 0.4;
-    background: var(--primary) !important;
+  opacity: 0.4;
+  background: var(--primary) !important;
 }
 
 .ranking-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .drag-handle {
-    cursor: grab;
-    color: var(--text-muted);
-    font-size: 1.2rem;
+  cursor: grab;
+  color: var(--text-muted);
+  font-size: 1.2rem;
 }

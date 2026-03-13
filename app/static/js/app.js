@@ -9,10 +9,19 @@ const getEventKey = () => {
     const urlParams = new URLSearchParams(window.location.search);
     let key = urlParams.get('key');
     if (key) {
+        // URL key is authoritative — always save and use it
         localStorage.setItem('civic_event_key', key);
         return key;
     }
-    return localStorage.getItem('civic_event_key');
+    // Fall back to localStorage, but ignore it if it doesn't match the
+    // server-side key (prevents stale keys from old events breaking submissions)
+    const stored = localStorage.getItem('civic_event_key');
+    if (stored && typeof EVENT_KEY !== 'undefined' && EVENT_KEY && stored !== EVENT_KEY) {
+        // Stale key — overwrite with the server-injected correct key
+        localStorage.setItem('civic_event_key', EVENT_KEY);
+        return EVENT_KEY;
+    }
+    return stored || (typeof EVENT_KEY !== 'undefined' ? EVENT_KEY : null);
 };
 
 const isKiosk = () => new URLSearchParams(window.location.search).get('kiosk') === '1';
@@ -31,10 +40,10 @@ async function init() {
                     <img src="/static/qr.png" alt="Event QR Code" style="width: 200px; height: 200px; background: white; padding: 10px; border-radius: 8px;">
                 </div>
                 <form onsubmit="event.preventDefault(); window.location.search = '?key=' + document.getElementById('manual-key').value;">
-                    <input type="text" id="manual-key" class="btn" style="background:#334155; color:white; text-align:center; margin-bottom:10px;" placeholder="ENTER KEY">
+                    <input type="text" id="manual-key" class="btn" style="background:var(--idea-bubble-bg); color:var(--text); border:1px solid var(--border); text-align:center; margin-bottom:10px;" placeholder="ENTER KEY">
                     <button type="submit" class="btn btn-primary">Join Event</button>
                 </form>
-                ${window.location.hostname === 'localhost' ? `<button onclick="window.location.search = '?key=CIVIC2026&kiosk=1'" class="btn" style="margin-top: 20px; border: 1px dashed var(--text-muted); color: var(--text-muted); background:transparent;">Launch Kiosk Mode (Local Only)</button>` : ''}
+                ${window.location.hostname === 'localhost' ? `<button onclick="window.location.search = '?key=${EVENT_KEY}&kiosk=1'" class="btn" style="margin-top: 20px; border: 1px dashed var(--text-muted); color: var(--text-muted); background:transparent;">Launch Kiosk Mode (Local Only)</button>` : ''}
             </div>`;
         return;
     }
@@ -135,7 +144,7 @@ function renderQuestion() {
         });
         html += `</div><button class="btn btn-primary" style="margin-top:20px;" onclick="submitMulti(${q.id})">Submit Selection</button>`;
     } else if (q.type === 'short_text' || q.type === 'word_cloud') {
-        html += `<textarea id="text-input" class="btn" style="background:#334155; color:white; text-align:left; min-height:100px;" placeholder="Type your response..."></textarea>
+        html += `<textarea id="text-input" class="btn" style="background:var(--idea-bubble-bg); color:var(--text); border:1px solid var(--border); text-align:left; min-height:100px;" placeholder="Type your response..."></textarea>
                  <button class="btn btn-primary" style="margin-top:10px;" onclick="submitText(${q.id})">Submit</button>`;
     } else if (q.type === 'ranking') {
         html += `<div id="sortable-list">`;
@@ -152,7 +161,7 @@ function renderQuestion() {
     html += `</div></div>`;
 
     if (isKiosk()) {
-        html += `<button onclick="resetKiosk()" class="btn" style="background: transparent; border: 1px solid #334155; color: #64748b; margin-top: 20px;">Home</button>`;
+        html += `<button onclick="resetKiosk()" class="btn" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); margin-top: 20px;">Home</button>`;
     }
 
     app.innerHTML = html;
