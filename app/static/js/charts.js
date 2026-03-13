@@ -1,3 +1,32 @@
+/*
+ * ═══════════════════════════════════════════════════════
+ *  CHART COLOR PALETTE — Easy to update!
+ *  These colors are cycled across bars in every bar/ranking
+ *  chart so each option gets its own distinct color.
+ *  Add, remove, or swap hex values freely.
+ *  Tip: keep colors vivid — they need to pop on the display.
+ * ═══════════════════════════════════════════════════════
+ */
+const CHART_COLORS = [
+    '#1b7f74',  // Teal green    (matches --primary)
+    '#e07b39',  // Burnt orange  (matches --accent)
+    '#7c5cbf',  // Soft purple
+    '#d4473a',  // Warm red
+    '#2e9e5b',  // Forest green
+    '#d4a017',  // Golden yellow
+];
+
+/* Word cloud background — should match --card-bg from CSS */
+const WORDCLOUD_BG = '#ffffff';
+
+/* Axis tick color — should be readable on --card-bg */
+const TICK_COLOR = '#1a1a2e';
+
+/* Axis grid line color */
+const GRID_COLOR = '#d6cfc4';
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 let pollCharts = {};
 
 async function updateCharts() {
@@ -18,6 +47,11 @@ async function updateCharts() {
     });
 }
 
+function getBarColors(count) {
+    // Returns an array of colors cycling through CHART_COLORS
+    return Array.from({ length: count }, (_, i) => CHART_COLORS[i % CHART_COLORS.length]);
+}
+
 function renderRankingChart(q, container) {
     let canvas = document.getElementById(`chart-${q.id}`);
     if (!canvas) {
@@ -30,20 +64,22 @@ function renderRankingChart(q, container) {
 
     const labels = q.data.map(d => d[0]);
     const values = q.data.map(d => d[1]);
+    const colors = getBarColors(labels.length);
 
     if (pollCharts[q.id]) {
         pollCharts[q.id].data.labels = labels;
         pollCharts[q.id].data.datasets[0].data = values;
+        pollCharts[q.id].data.datasets[0].backgroundColor = colors;
         pollCharts[q.id].update();
     } else {
         pollCharts[q.id] = new Chart(canvas, {
             type: 'bar',
             data: {
-                labels: labels,
+                labels,
                 datasets: [{
                     label: 'Score',
                     data: values,
-                    backgroundColor: '#005f86', // Baltic Blue
+                    backgroundColor: colors,
                     borderRadius: 8
                 }]
             },
@@ -52,12 +88,12 @@ function renderRankingChart(q, container) {
                 scales: {
                     x: {
                         beginAtZero: true,
-                        grid: { color: '#334155' },
-                        ticks: { color: '#f8fafc', font: { weight: 'bold' } }
+                        grid: { color: GRID_COLOR },
+                        ticks: { color: TICK_COLOR, font: { weight: 'bold' } }
                     },
                     y: {
                         grid: { display: false },
-                        ticks: { color: '#f8fafc', font: { size: 14, weight: 'bold' } }
+                        ticks: { color: TICK_COLOR, font: { size: 14, weight: 'bold' } }
                     }
                 },
                 plugins: {
@@ -73,26 +109,24 @@ function renderWordCloud(q, container) {
     if (!canvas) {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = `<h3>${q.title}</h3><div style="width:100%; height:300px;"><canvas id="cloud-${q.id}" style="width:100%; height:100%;"></canvas></div>`;
+        card.innerHTML = `<h3>${q.title}</h3><div style="width:100%; height:450px;"><canvas id="cloud-${q.id}" style="width:100%; height:100%;"></canvas></div>`;
         container.appendChild(card);
         canvas = document.getElementById(`cloud-${q.id}`);
-        // Make canvas resolution match its display size
         canvas.width = canvas.parentElement.offsetWidth;
         canvas.height = canvas.parentElement.offsetHeight;
     }
 
     if (q.data && q.data.length > 0) {
+        const maxFreq = Math.max(...q.data.map(d => d[1]));
         WordCloud(canvas, {
             list: q.data,
             gridSize: 16,
-            weightFactor: function (size) {
-                return (size * 20) / Math.max(...q.data.map(d => d[1]));
-            },
+            weightFactor: size => (size * 50) / maxFreq,
             fontFamily: 'Inter, sans-serif',
-            color: 'random-light',
+            color: () => CHART_COLORS[Math.floor(Math.random() * CHART_COLORS.length)],
             rotateRatio: 0.5,
             rotationSteps: 2,
-            backgroundColor: '#1e293b'
+            backgroundColor: WORDCLOUD_BG
         });
     }
 }
@@ -109,20 +143,22 @@ function renderPollChart(q, container) {
 
     const labels = Object.keys(q.data);
     const values = Object.values(q.data);
+    const colors = getBarColors(labels.length);
 
     if (pollCharts[q.id]) {
         pollCharts[q.id].data.labels = labels;
         pollCharts[q.id].data.datasets[0].data = values;
+        pollCharts[q.id].data.datasets[0].backgroundColor = colors;
         pollCharts[q.id].update();
     } else {
         pollCharts[q.id] = new Chart(canvas, {
             type: 'bar',
             data: {
-                labels: labels,
+                labels,
                 datasets: [{
                     label: 'Votes',
                     data: values,
-                    backgroundColor: '#005f86', // Baltic Blue
+                    backgroundColor: colors,
                     borderRadius: 8
                 }]
             },
@@ -130,12 +166,13 @@ function renderPollChart(q, container) {
                 indexAxis: 'y',
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        grid: { color: '#334155' },
-                        ticks: { color: '#f8fafc', font: { weight: 'bold' } }
+                        grid: { display: false },
+                        ticks: { color: TICK_COLOR, font: { size: 12, weight: 'bold' } }
                     },
                     x: {
-                        ticks: { color: '#f8fafc', font: { size: 12, weight: 'bold' } }
+                        beginAtZero: true,
+                        grid: { color: GRID_COLOR },
+                        ticks: { color: TICK_COLOR, font: { weight: 'bold' } }
                     }
                 },
                 plugins: { legend: { display: false } }
@@ -155,9 +192,20 @@ function renderIdeas(q, container) {
     }
 
     list.innerHTML = q.data.map(idea => `
-        <div style="background:#334155; padding:12px; margin-bottom:8px; border-radius:8px;">
-            ${idea.text}
-        </div>
+        <div
+            title="${idea.text.replace(/"/g, '&quot;')}"
+            style="
+                background: var(--idea-bubble-bg);
+                padding: 12px;
+                margin-bottom: 8px;
+                border-radius: 8px;
+                border: 1px solid var(--border);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                cursor: default;
+            "
+        >${idea.text}</div>
     `).join('');
 
     const moreIndicator = document.getElementById(`ideas-more-${q.id}`);
@@ -183,4 +231,4 @@ async function updateTunnelUrl() {
 window.updateCharts = updateCharts;
 updateCharts();
 updateTunnelUrl();
-setInterval(updateTunnelUrl, 30000); // Check every 30s in case tunnel restarts
+setInterval(updateTunnelUrl, 30000);

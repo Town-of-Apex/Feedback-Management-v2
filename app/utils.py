@@ -42,4 +42,4 @@ def clean_text_for_wordcloud(text):
     if not text or contains_profanity(text):
         return []
     words = text.lower().replace('.', '').replace(',', '').replace('!', '').replace('?', '').split()
-    return [w for w in words if w not in STOP_WORDS and len(w) > 2]
+    return [w for w in words if w not in STOP_WORDS]
