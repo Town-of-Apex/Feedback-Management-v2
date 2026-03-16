@@ -24,11 +24,8 @@ const getEventKey = () => {
     return stored || (typeof EVENT_KEY !== 'undefined' ? EVENT_KEY : null);
 };
 
-const isKiosk = () => new URLSearchParams(window.location.search).get('kiosk') === '1';
-
 async function init() {
     const key = getEventKey();
-    const kiosk = isKiosk();
 
     if (!key) {
         progressWrapper.style.display = 'none';
@@ -43,12 +40,11 @@ async function init() {
                     <input type="text" id="manual-key" class="btn" style="background:var(--idea-bubble-bg); color:var(--text); border:1px solid var(--border); text-align:center; margin-bottom:10px;" placeholder="ENTER KEY">
                     <button type="submit" class="btn btn-primary">Join Event</button>
                 </form>
-                ${window.location.hostname === 'localhost' ? `<button onclick="window.location.search = '?key=${EVENT_KEY}&kiosk=1'" class="btn" style="margin-top: 20px; border: 1px dashed var(--text-muted); color: var(--text-muted); background:transparent;">Launch Kiosk Mode (Local Only)</button>` : ''}
             </div>`;
         return;
     }
 
-    if (kiosk && currentIdx === 0) {
+    if (currentIdx === 0) {
         renderKioskStart();
         return;
     }
@@ -110,17 +106,13 @@ function renderQuestion() {
     }
 
     if (currentIdx >= questions.length) {
-        if (isKiosk()) {
-            app.innerHTML = `
-                <div class="card" style="text-align: center;">
-                    <h2>Thank you!</h2>
-                    <p>Your feedback has been recorded.</p>
-                    <button onclick="resetKiosk()" class="btn btn-primary" style="margin-top: 20px;">Finish</button>
-                </div>`;
-            kioskTimer = setTimeout(resetKiosk, 10000);
-        } else {
-            app.innerHTML = '<div class="card" style="text-align:center;"><h2>Thank you!</h2><p>Your feedback has been recorded.</p></div>';
-        }
+        app.innerHTML = `
+            <div class="card" style="text-align: center;">
+                <h2>Thank you!</h2>
+                <p>Your feedback has been recorded.</p>
+                <button onclick="resetKiosk()" class="btn btn-primary" style="margin-top: 20px;">Finish</button>
+            </div>`;
+        kioskTimer = setTimeout(resetKiosk, 10000);
         return;
     }
 
@@ -160,9 +152,7 @@ function renderQuestion() {
 
     html += `</div></div>`;
 
-    if (isKiosk()) {
-        html += `<button onclick="resetKiosk()" class="btn" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); margin-top: 20px;">Home</button>`;
-    }
+    html += `<button onclick="resetKiosk()" class="btn" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); margin-top: 20px;">Home</button>`;
 
     app.innerHTML = html;
 
