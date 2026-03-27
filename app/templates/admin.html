@@ -66,11 +66,15 @@
     <div class="container" style="max-width: 900px;">
         <header>
             <h1>Admin Dashboard</h1>
-            <a href="/" target="_blank" class="btn btn-primary"
-                style="display:inline-block; width:auto; padding:8px 16px; background: #818cf8;">Launch
-                Kiosk Mode</a>
-            <a href="/display" target="_blank" class="btn btn-primary"
-                style="display:inline-block; width:auto; padding:8px 16px; margin-left:10px;">Open Display Board</a>
+            <div style="margin-bottom: 10px;">
+                <a href="/" target="_blank" class="btn btn-primary"
+                    style="display:inline-block; width:auto; padding:8px 16px; background: #818cf8;">Launch
+                    Kiosk Mode</a>
+                <a href="/display" target="_blank" class="btn btn-primary"
+                    style="display:inline-block; width:auto; padding:8px 16px; margin-left:10px;">Open Display Board</a>
+                <a href="/admin/export" class="btn btn-primary"
+                    style="display:inline-block; width:auto; padding:8px 16px; margin-left:10px; background: #10b981;">Export Responses (CSV)</a>
+            </div>
         </header>
 
         <section class="card">
@@ -112,6 +116,8 @@
                                     {% if q.active %}Deactivate{% else %}Activate{% endif %}
                                 </button>
                             </form>
+                            <a href="/admin/questions/{{q.id}}/edit" class="btn-edit" 
+                               style="display:inline-block; border-radius: 4px; padding: 4px 8px; background: #6366f1; color: #fff; text-decoration: none; margin-left: 5px; font-size: 13.33px;">Edit</a>
                             <form action="/admin/questions/{{q.id}}/delete" method="POST"
                                 style="display:inline; margin-left: 5px;"
                                 onsubmit="return confirm('Delete this question and all its responses?');">
