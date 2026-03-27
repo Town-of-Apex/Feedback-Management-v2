@@ -200,12 +200,19 @@ function renderIdeas(q, container) {
                 margin-bottom: 8px;
                 border-radius: 8px;
                 border: 1px solid var(--border);
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 15px;
                 cursor: default;
             "
-        >${idea.text}</div>
+        >
+            <span style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${idea.text}</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                ${idea.votes_up > 0 ? `<span style="background: var(--success); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">↑${idea.votes_up}</span>` : ''}
+                ${idea.votes_down > 0 ? `<span style="background: var(--danger); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">↓${idea.votes_down}</span>` : ''}
+            </div>
+        </div>
     `).join('');
 
     const moreIndicator = document.getElementById(`ideas-more-${q.id}`);

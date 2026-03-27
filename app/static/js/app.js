@@ -124,15 +124,23 @@ function renderQuestion() {
 
     if (q.type === 'single_select') {
         q.options.forEach(opt => {
+            const isOther = opt.toLowerCase() === 'other';
             html += `<div class="poll-option" onclick="submitSingle(${q.id}, '${opt}')">${opt}</div>`;
+            if (isOther) {
+                html += `<input type="text" id="other-input-${q.id}" class="btn" style="display:none; margin-bottom:10px; background:var(--idea-bubble-bg); color:var(--text); border:1px solid var(--border);" placeholder="Please specify...">`;
+            }
         });
     } else if (q.type === 'multi_select') {
         q.options.forEach((opt, i) => {
+            const isOther = opt.toLowerCase() === 'other';
             html += `
                 <label class="poll-option" style="display:flex; align-items:center; gap:12px;">
-                    <input type="checkbox" name="multi" value="${opt}" style="width:20px; height:20px; margin:0;">
+                    <input type="checkbox" name="multi" value="${opt}" style="width:20px; height:20px; margin:0;" onchange="${isOther ? `document.getElementById('other-input-${q.id}').style.display = this.checked ? 'block' : 'none'` : ''}">
                     <span>${opt}</span>
                 </label>`;
+            if (isOther) {
+                html += `<input type="text" id="other-input-${q.id}" class="btn" style="display:none; margin-bottom:10px; background:var(--idea-bubble-bg); color:var(--text); border:1px solid var(--border);" placeholder="Please specify...">`;
+            }
         });
         html += `</div><button class="btn btn-primary" style="margin-top:20px;" onclick="submitMulti(${q.id})">Submit Selection</button>`;
     } else if (q.type === 'short_text' || q.type === 'word_cloud') {
@@ -166,6 +174,21 @@ function renderQuestion() {
 }
 
 async function submitSingle(questionId, option) {
+    if (option.toLowerCase() === 'other') {
+        const otherInput = document.getElementById('other-input-' + questionId);
+        if (otherInput.style.display === 'none') {
+            otherInput.style.display = 'block';
+            otherInput.focus();
+            return;
+        }
+        const val = otherInput.value.trim();
+        if (!val) {
+            otherInput.style.borderColor = '#ef4444';
+            return;
+        }
+        option = "Other: " + val;
+    }
+
     const key = getEventKey();
     const res = await fetch(`/submit?key=${key}`, {
         method: 'POST',
@@ -179,7 +202,14 @@ async function submitSingle(questionId, option) {
 }
 
 async function submitMulti(questionId) {
-    const selected = Array.from(document.querySelectorAll('input[name="multi"]:checked')).map(el => el.value);
+    const selected = Array.from(document.querySelectorAll('input[name="multi"]:checked')).map(el => {
+        if (el.value.toLowerCase() === 'other') {
+            const val = document.getElementById('other-input-' + questionId).value.trim();
+            return val ? "Other: " + val : null;
+        }
+        return el.value;
+    }).filter(v => v !== null);
+    
     if (selected.length === 0) return;
 
     const key = getEventKey();
@@ -208,8 +238,66 @@ async function submitText(questionId) {
         body: JSON.stringify({ question_id: questionId, text: text })
     });
     if (res.ok) {
-        currentIdx++;
-        renderQuestion();
+        const q = questions[currentIdx];
+        if (q.allow_votes) {
+            renderVotingSession(questionId);
+        } else {
+            currentIdx++;
+            renderQuestion();
+        }
+    }
+}
+
+async function renderVotingSession(questionId) {
+    app.innerHTML = `
+        <div class="card" style="text-align: center;">
+            <h2 style="color:var(--accent);">Great Idea!</h2>
+            <p style="margin-bottom:20px;">What do you think of these other ideas from the community?</p>
+            <div id="vote-container" style="text-align:left;">
+                <p>Loading others...</p>
+            </div>
+            <button onclick="currentIdx++; renderQuestion();" class="btn btn-primary" style="margin-top:20px; background:var(--text-muted);">Next Question</button>
+        </div>
+    `;
+
+    try {
+        const res = await fetch(`/questions/${questionId}/responses`);
+        const data = await res.json();
+        const container = document.getElementById('vote-container');
+        
+        if (data.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">No other ideas to vote on yet. You\'re one of the first!</p>';
+            return;
+        }
+
+        container.innerHTML = data.map(r => `
+            <div class="poll-option" style="cursor:default; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                <span style="flex:1;">${r.text}</span>
+                <div style="display:flex; gap:5px;">
+                    <button onclick="voteResponse(${r.id}, 'up', ${questionId}, this)" class="btn" style="padding:5px 10px; background:#22c55e; border:none; color:white;">↑</button>
+                    <button onclick="voteResponse(${r.id}, 'down', ${questionId}, this)" class="btn" style="padding:5px 10px; background:#ef4444; border:none; color:white;">↓</button>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function voteResponse(responseId, voteType, questionId, btn) {
+    const key = getEventKey();
+    const res = await fetch(`/vote?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ response_id: responseId, vote_type: voteType })
+    });
+    
+    if (res.ok) {
+        // Find the parent poll-option and hide it or mark as voted
+        const parent = btn.closest('.poll-option');
+        parent.style.opacity = '0.5';
+        parent.style.pointerEvents = 'none';
+        btn.parentElement.innerHTML = '<span style="color:var(--success); font-weight:bold;">Voted!</span>';
     }
 }
 

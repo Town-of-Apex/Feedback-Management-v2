@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Question</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 4px 0;
+            background: var(--idea-bubble-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 600px;">
+        <header>
+            <h1>Edit Question</h1>
+            <a href="/admin" class="btn btn-primary" style="display:inline-block; width:auto; padding:8px 16px; background: var(--text-muted);">Back to Dashboard</a>
+        </header>
+
+        <section class="card">
+            <form action="/admin/questions/{{ question.id }}/edit" method="POST">
+                <label>Title</label>
+                <input type="text" name="title" value="{{ question.title }}" required>
+                
+                <label>Description</label>
+                <textarea name="description">{{ question.description or '' }}</textarea>
+                
+                <label>Type (Be careful changing this if you already have responses!)</label>
+                <select name="type">
+                    <option value="single_select" {% if question.type == 'single_select' %}selected{% endif %}>Single Select Poll</option>
+                    <option value="multi_select" {% if question.type == 'multi_select' %}selected{% endif %}>Multi-Select (Checkboxes)</option>
+                    <option value="short_text" {% if question.type == 'short_text' %}selected{% endif %}>Short Text / Idea List</option>
+                    <option value="word_cloud" {% if question.type == 'word_cloud' %}selected{% endif %}>Word Cloud</option>
+                    <option value="ranking" {% if question.type == 'ranking' %}selected{% endif %}>Ranking</option>
+                </select>
+                
+                <label>Options (comma separated)</label>
+                <input type="text" name="options" value="{{ (question.options or []) | join(',') }}">
+                
+                <div style="margin-top: 20px;">
+                    <button type="submit" name="action" value="update" class="btn btn-primary">Save Changes</button>
+                    <button type="submit" name="action" value="recreate" class="btn btn-primary" style="background: #3b82f6; margin-left: 10px;">Save as New (Archive old one)</button>
+                </div>
+                
+                <p style="font-size: 0.8em; color: var(--text-muted); margin-top: 15px;">
+                    <strong>Archive old one:</strong> This will deactivate the current question and create a new copy with your changes. This is safer if you are making big changes to a question that already has answers.
+                </p>
+            </form>
+        </section>
+    </div>
+</body>
+</html>
