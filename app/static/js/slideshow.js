@@ -1,29 +1,18 @@
-/*
- * ═══════════════════════════════════════════════════════
- *  CHART COLOR PALETTE — Easy to update!
- *  These colors are cycled across bars in every bar/ranking
- *  chart so each option gets its own distinct color.
- *  Add, remove, or swap hex values freely.
- *  Must be kept in sync with charts.js.
- * ═══════════════════════════════════════════════════════
- */
 const CHART_COLORS = [
-    '#1b7f74',  // Teal green    (matches --primary)
-    '#e07b39',  // Burnt orange  (matches --accent)
-    '#7c5cbf',  // Soft purple
-    '#d4473a',  // Warm red
-    '#2e9e5b',  // Forest green
-    '#d4a017',  // Golden yellow
+    '#005a70',  /* Teal (Primary) */
+    '#968f8b',  /* Rosy (Metadata) */
+    '#2d3748',  /* Slate */
+    '#4a5568',  /* Cool Grey */
+    '#1a365d',  /* Navy */
+    '#065f46',  /* Forest */
 ];
 
-/* Word cloud background — should match --card-bg from CSS */
+/* Match --bg-surface from CSS */
 const WORDCLOUD_BG = '#ffffff';
 
-/* Axis tick color — should be readable on --card-bg */
-const TICK_COLOR = '#1a1a2e';
-
-/* Axis grid line color */
-const GRID_COLOR = '#d6cfc4';
+/* Match --text-main and --border-line from CSS */
+const TICK_COLOR = '#1a1a1a';
+const GRID_COLOR = '#e1e4e8';
 
 function getBarColors(count) {
     return Array.from({ length: count }, (_, i) => CHART_COLORS[i % CHART_COLORS.length]);
@@ -64,6 +53,7 @@ function buildCarousel() {
     const totalPages = pages.length;
 
     // Measure the viewport width — each page gets exactly this width
+    if (!viewport) return;
     const pageWidth = viewport.offsetWidth;
 
     // ── Build or sync DOM pages ──────────────────────────────────────────────
@@ -116,6 +106,7 @@ function buildCarousel() {
 function goToPage(index) {
     const track = document.getElementById('carousel-track');
     const viewport = document.getElementById('carousel-viewport');
+    if (!viewport) return;
     const pageWidth = viewport.offsetWidth;
     const totalPages = document.querySelectorAll('.carousel-page').length;
 
@@ -162,13 +153,13 @@ function buildCard(q) {
     card.dataset.questionType = q.type;
 
     if (q.type === 'single_select' || q.type === 'multi_select') {
-        card.innerHTML = `<h3>${q.title}</h3><div style="flex:1;min-height:0;position:relative;"><canvas id="chart-${q.id}"></canvas></div>`;
+        card.innerHTML = `<h3 class="title-font">${q.title}</h3><div style="flex:1;min-height:0;position:relative;"><canvas id="chart-${q.id}"></canvas></div>`;
     } else if (q.type === 'ranking') {
-        card.innerHTML = `<h3>${q.title}</h3><p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">Ranked Preference Score (Higher is better)</p><div style="flex:1;min-height:0;position:relative;"><canvas id="chart-${q.id}"></canvas></div>`;
+        card.innerHTML = `<h3 class="title-font">${q.title}</h3><p style="font-size:0.8rem;color:var(--rosy);margin-bottom:8px;">Ranked Preference Score</p><div style="flex:1;min-height:0;position:relative;"><canvas id="chart-${q.id}"></canvas></div>`;
     } else if (q.type === 'word_cloud') {
-        card.innerHTML = `<h3>${q.title}</h3><div style="flex:1;min-height:0;position:relative;"><canvas id="cloud-${q.id}" style="width:100%;height:100%;"></canvas></div>`;
+        card.innerHTML = `<h3 class="title-font">${q.title}</h3><div style="flex:1;min-height:0;position:relative;"><canvas id="cloud-${q.id}" style="width:100%;height:100%;"></canvas></div>`;
     } else if (q.type === 'short_text') {
-        card.innerHTML = `<h3>${q.title}</h3><div id="ideas-${q.id}" class="ideas-list"></div><div id="ideas-more-${q.id}" class="more-indicator"></div>`;
+        card.innerHTML = `<h3 class="title-font">${q.title}</h3><div id="ideas-${q.id}" class="ideas-list"></div><div id="ideas-more-${q.id}" class="more-indicator" style="font-weight:600; color:var(--teal); margin-top:1rem; text-align:center;"></div>`;
     }
 
     return card;
@@ -183,7 +174,6 @@ function renderChart(q) {
     } else if (q.type === 'short_text') {
         renderIdeas(q);
     }
-    // Word clouds are deferred to renderWordCloudsOnPage() since they need visible sizing
 }
 
 /** Word clouds must be rendered while their canvas is visible and sized. */
@@ -223,7 +213,7 @@ function renderPollChart(q) {
                     label: 'Votes',
                     data: values,
                     backgroundColor: colors,
-                    borderRadius: 8
+                    borderRadius: 4
                 }]
             },
             options: {
@@ -231,8 +221,8 @@ function renderPollChart(q) {
                 maintainAspectRatio: false,
                 indexAxis: 'y',
                 scales: {
-                    y: { grid: { display: false }, ticks: { color: TICK_COLOR, font: { size: 14, weight: 'bold' } } },
-                    x: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { color: TICK_COLOR, font: { weight: 'bold' } } }
+                    y: { grid: { display: false }, ticks: { color: TICK_COLOR, font: { size: 14, weight: '600' } } },
+                    x: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { color: TICK_COLOR, font: { weight: '600' } } }
                 },
                 plugins: { legend: { display: false } }
             }
@@ -262,7 +252,7 @@ function renderRankingChart(q) {
                     label: 'Score',
                     data: values,
                     backgroundColor: colors,
-                    borderRadius: 8
+                    borderRadius: 4
                 }]
             },
             options: {
@@ -270,8 +260,8 @@ function renderRankingChart(q) {
                 maintainAspectRatio: false,
                 indexAxis: 'y',
                 scales: {
-                    x: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { color: TICK_COLOR, font: { weight: 'bold' } } },
-                    y: { grid: { display: false }, ticks: { color: TICK_COLOR, font: { size: 14, weight: 'bold' } } }
+                    x: { beginAtZero: true, grid: { color: GRID_COLOR }, ticks: { color: TICK_COLOR, font: { weight: '600' } } },
+                    y: { grid: { display: false }, ticks: { color: TICK_COLOR, font: { size: 14, weight: '600' } } }
                 },
                 plugins: { legend: { display: false } }
             }
@@ -287,7 +277,6 @@ function renderWordCloud(q, card) {
     const w = container.offsetWidth;
     const h = container.offsetHeight;
 
-    // Only render if actual dimensions are available
     if (w === 0 || h === 0) return;
 
     canvas.width = w;
@@ -313,20 +302,9 @@ function renderIdeas(q) {
     if (!list) return;
 
     list.innerHTML = q.data.map(idea => `
-        <div
-            title="${idea.text.replace(/"/g, '&quot;')}"
-            style="
-                background: var(--idea-bubble-bg);
-                padding: 12px;
-                margin-bottom: 8px;
-                border-radius: 8px;
-                border: 1px solid var(--border);
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                cursor: default;
-            "
-        >${idea.text}</div>
+        <div class="idea-bubble" title="${idea.text.replace(/"/g, '&quot;')}">
+            <span style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;">${idea.text}</span>
+        </div>
     `).join('');
 
     if (moreIndicator) {
@@ -344,15 +322,14 @@ async function updateTunnelUrl() {
             if (el) el.innerText = url.trim();
         }
     } catch (e) {
-        // Not available locally
     }
 }
 
 // ─── Handle window resize ────────────────────────────────────────────────────
 window.addEventListener('resize', () => {
-    // Recalculate page widths without animation
     const track = document.getElementById('carousel-track');
     const viewport = document.getElementById('carousel-viewport');
+    if (!viewport || !track) return;
     const pages = document.querySelectorAll('.carousel-page');
     const pageWidth = viewport.offsetWidth;
 
@@ -368,7 +345,6 @@ window.addEventListener('resize', () => {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 window.updateCharts = updateCharts;
-// Wait for full page load so the carousel viewport has real pixel dimensions
 window.addEventListener('load', () => {
     updateCharts();
     updateTunnelUrl();
