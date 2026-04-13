@@ -3,53 +3,57 @@
 <head>
     <title>Edit Question</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <style>
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            margin: 4px 0;
-            background: var(--idea-bubble-bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            border-radius: 4px;
-        }
-    </style>
 </head>
 <body>
-    <div class="container" style="max-width: 600px;">
-        <header>
-            <h1>Edit Question</h1>
-            <a href="/admin" class="btn btn-primary" style="display:inline-block; width:auto; padding:8px 16px; background: var(--text-muted);">Back to Dashboard</a>
-        </header>
+    <header class="nav-header">
+        <div class="nav-container">
+            <h1 class="title-font" style="font-size: 1.5rem; margin: 0;">Edit Question</h1>
+            <nav class="nav-links">
+                <a href="/admin" class="nav-link">Back to Dashboard</a>
+            </nav>
+        </div>
+    </header>
 
+    <div class="container" style="max-width: 800px;">
         <section class="card">
             <form action="/admin/questions/{{ question.id }}/edit" method="POST">
-                <label>Title</label>
-                <input type="text" name="title" value="{{ question.title }}" required>
-                
-                <label>Description</label>
-                <textarea name="description">{{ question.description or '' }}</textarea>
-                
-                <label>Type (Be careful changing this if you already have responses!)</label>
-                <select name="type">
-                    <option value="single_select" {% if question.type == 'single_select' %}selected{% endif %}>Single Select Poll</option>
-                    <option value="multi_select" {% if question.type == 'multi_select' %}selected{% endif %}>Multi-Select (Checkboxes)</option>
-                    <option value="short_text" {% if question.type == 'short_text' %}selected{% endif %}>Short Text / Idea List</option>
-                    <option value="word_cloud" {% if question.type == 'word_cloud' %}selected{% endif %}>Word Cloud</option>
-                    <option value="ranking" {% if question.type == 'ranking' %}selected{% endif %}>Ranking</option>
-                </select>
-                
-                <label>Options (comma separated)</label>
-                <input type="text" name="options" value="{{ (question.options or []) | join(',') }}">
-                
-                <div style="margin-top: 20px;">
-                    <button type="submit" name="action" value="update" class="btn btn-primary">Save Changes</button>
-                    <button type="submit" name="action" value="recreate" class="btn btn-primary" style="background: #3b82f6; margin-left: 10px;">Save as New (Archive old one)</button>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--rosy); margin-bottom: 0.5rem; font-weight: 600;">Title</label>
+                    <input type="text" name="title" value="{{ question.title }}" required>
                 </div>
                 
-                <p style="font-size: 0.8em; color: var(--text-muted); margin-top: 15px;">
-                    <strong>Archive old one:</strong> This will deactivate the current question and create a new copy with your changes. This is safer if you are making big changes to a question that already has answers.
-                </p>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--rosy); margin-bottom: 0.5rem; font-weight: 600;">Description</label>
+                    <textarea name="description" style="min-height: 100px;">{{ question.description or '' }}</textarea>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--rosy); margin-bottom: 0.5rem; font-weight: 600;">Question Type</label>
+                    <p style="font-size: 0.8rem; color: var(--rosy); margin-top: -0.25rem; margin-bottom: 0.5rem;">Be careful changing this if responses already exist.</p>
+                    <select name="type">
+                        <option value="single_select" {% if question.type == 'single_select' %}selected{% endif %}>Single Select Poll</option>
+                        <option value="multi_select" {% if question.type == 'multi_select' %}selected{% endif %}>Multi-Select (Checkboxes)</option>
+                        <option value="short_text" {% if question.type == 'short_text' %}selected{% endif %}>Short Text / Idea List</option>
+                        <option value="word_cloud" {% if question.type == 'word_cloud' %}selected{% endif %}>Word Cloud</option>
+                        <option value="ranking" {% if question.type == 'ranking' %}selected{% endif %}>Ranking</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--rosy); margin-bottom: 0.5rem; font-weight: 600;">Options (comma separated)</label>
+                    <input type="text" name="options" value="{{ (question.options or []) | join(',') }}">
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" name="action" value="update" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                    <button type="submit" name="action" value="recreate" class="btn btn-secondary" style="flex: 1;">Save as New Copy</button>
+                </div>
+                
+                <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-inner); border-radius: 6px; border: 1px solid var(--border-line);">
+                    <p style="font-size: 0.85rem; color: var(--rosy); margin: 0;">
+                        <strong style="color: var(--teal);">Safe Change Strategy:</strong> "Save as New Copy" will deactivate the current question and create a new copy with your changes. Use this for significant structural changes to preserve existing data integrity.
+                    </p>
+                </div>
             </form>
         </section>
     </div>

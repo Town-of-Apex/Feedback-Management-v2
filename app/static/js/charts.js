@@ -8,22 +8,20 @@
  * ═══════════════════════════════════════════════════════
  */
 const CHART_COLORS = [
-    '#1b7f74',  // Teal green    (matches --primary)
-    '#e07b39',  // Burnt orange  (matches --accent)
-    '#7c5cbf',  // Soft purple
-    '#d4473a',  // Warm red
-    '#2e9e5b',  // Forest green
-    '#d4a017',  // Golden yellow
+    '#005a70',  /* Teal (Primary) */
+    '#968f8b',  /* Rosy (Metadata) */
+    '#2d3748',  /* Slate */
+    '#4a5568',  /* Cool Grey */
+    '#1a365d',  /* Navy */
+    '#065f46',  /* Forest */
 ];
 
-/* Word cloud background — should match --card-bg from CSS */
+/* Match --bg-surface from CSS */
 const WORDCLOUD_BG = '#ffffff';
 
-/* Axis tick color — should be readable on --card-bg */
-const TICK_COLOR = '#1a1a2e';
-
-/* Axis grid line color */
-const GRID_COLOR = '#d6cfc4';
+/* Match --text-main and --border-line from CSS */
+const TICK_COLOR = '#1a1a1a';
+const GRID_COLOR = '#e1e4e8';
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -48,7 +46,6 @@ async function updateCharts() {
 }
 
 function getBarColors(count) {
-    // Returns an array of colors cycling through CHART_COLORS
     return Array.from({ length: count }, (_, i) => CHART_COLORS[i % CHART_COLORS.length]);
 }
 
@@ -57,7 +54,7 @@ function renderRankingChart(q, container) {
     if (!canvas) {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = `<h3>${q.title}</h3><p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Ranked Preference Score (Higher is better)</p><canvas id="chart-${q.id}"></canvas>`;
+        card.innerHTML = `<h3 class="title-font">${q.title}</h3><p style="font-size: 0.8rem; color: var(--rosy); margin-bottom: 1.5rem;">Ranked Preference Score (Higher is better)</p><canvas id="chart-${q.id}"></canvas>`;
         container.appendChild(card);
         canvas = document.getElementById(`chart-${q.id}`);
     }
@@ -80,7 +77,7 @@ function renderRankingChart(q, container) {
                     label: 'Score',
                     data: values,
                     backgroundColor: colors,
-                    borderRadius: 8
+                    borderRadius: 4
                 }]
             },
             options: {
@@ -89,11 +86,11 @@ function renderRankingChart(q, container) {
                     x: {
                         beginAtZero: true,
                         grid: { color: GRID_COLOR },
-                        ticks: { color: TICK_COLOR, font: { weight: 'bold' } }
+                        ticks: { color: TICK_COLOR, font: { weight: '600' } }
                     },
                     y: {
                         grid: { display: false },
-                        ticks: { color: TICK_COLOR, font: { size: 14, weight: 'bold' } }
+                        ticks: { color: TICK_COLOR, font: { size: 14, weight: '600' } }
                     }
                 },
                 plugins: {
@@ -109,7 +106,7 @@ function renderWordCloud(q, container) {
     if (!canvas) {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = `<h3>${q.title}</h3><div style="width:100%; height:450px;"><canvas id="cloud-${q.id}" style="width:100%; height:100%;"></canvas></div>`;
+        card.innerHTML = `<h3 class="title-font">${q.title}</h3><div style="width:100%; height:450px;"><canvas id="cloud-${q.id}" style="width:100%; height:100%;"></canvas></div>`;
         container.appendChild(card);
         canvas = document.getElementById(`cloud-${q.id}`);
         canvas.width = canvas.parentElement.offsetWidth;
@@ -136,7 +133,7 @@ function renderPollChart(q, container) {
     if (!canvas) {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = `<h3>${q.title}</h3><canvas id="chart-${q.id}"></canvas>`;
+        card.innerHTML = `<h3 class="title-font">${q.title}</h3><canvas id="chart-${q.id}"></canvas>`;
         container.appendChild(card);
         canvas = document.getElementById(`chart-${q.id}`);
     }
@@ -159,7 +156,7 @@ function renderPollChart(q, container) {
                     label: 'Votes',
                     data: values,
                     backgroundColor: colors,
-                    borderRadius: 8
+                    borderRadius: 4
                 }]
             },
             options: {
@@ -167,12 +164,12 @@ function renderPollChart(q, container) {
                 scales: {
                     y: {
                         grid: { display: false },
-                        ticks: { color: TICK_COLOR, font: { size: 12, weight: 'bold' } }
+                        ticks: { color: TICK_COLOR, font: { size: 12, weight: '600' } }
                     },
                     x: {
                         beginAtZero: true,
                         grid: { color: GRID_COLOR },
-                        ticks: { color: TICK_COLOR, font: { weight: 'bold' } }
+                        ticks: { color: TICK_COLOR, font: { weight: '600' } }
                     }
                 },
                 plugins: { legend: { display: false } }
@@ -186,40 +183,29 @@ function renderIdeas(q, container) {
     if (!list) {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = `<h3>${q.title}</h3><div id="ideas-${q.id}" class="ideas-list"></div><div id="ideas-more-${q.id}" class="more-indicator"></div>`;
+        card.innerHTML = `<h3 class="title-font">${q.title}</h3><div id="ideas-${q.id}" class="ideas-list"></div><div id="ideas-more-${q.id}" class="more-indicator" style="font-weight:600; color:var(--teal); margin-top:1rem; text-align:center;"></div>`;
         container.appendChild(card);
         list = document.getElementById(`ideas-${q.id}`);
     }
 
     list.innerHTML = q.data.map(idea => `
-        <div
-            title="${idea.text.replace(/"/g, '&quot;')}"
-            style="
-                background: var(--idea-bubble-bg);
-                padding: 12px;
-                margin-bottom: 8px;
-                border-radius: 8px;
-                border: 1px solid var(--border);
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 15px;
-                cursor: default;
-            "
-        >
-            <span style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${idea.text}</span>
+        <div class="idea-bubble" title="${idea.text.replace(/"/g, '&quot;')}">
+            <span style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;">${idea.text}</span>
             <div style="display: flex; gap: 8px; align-items: center;">
-                ${idea.votes_up > 0 ? `<span style="background: var(--success); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">↑${idea.votes_up}</span>` : ''}
-                ${idea.votes_down > 0 ? `<span style="background: var(--danger); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">↓${idea.votes_down}</span>` : ''}
+                ${idea.votes_up > 0 ? `
+                    <span class="vote-badge vote-up" style="display:flex; align-items:center; gap:4px;">
+                        <svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:3;" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M12 5L5 12M12 5L19 12"/></svg>
+                        ${idea.votes_up}
+                    </span>` : ''}
+                ${idea.votes_down > 0 ? `
+                    <span class="vote-badge vote-down" style="display:flex; align-items:center; gap:4px;">
+                        <svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:3;" stroke-linecap round stroke-linejoin="round"><path d="M12 5v14M12 19l-7-7M12 19l7-7"/></svg>
+                        ${idea.votes_down}
+                    </span>` : ''}
             </div>
         </div>
     `).join('');
 
-    const moreIndicator = document.getElementById(`ideas-more-${q.id}`);
-    if (q.total > 10) {
-        moreIndicator.innerText = `+${q.total - 10} more ideas submitted`;
-    } else {
-        moreIndicator.innerText = '';
     }
 }
 

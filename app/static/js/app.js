@@ -31,14 +31,14 @@ async function init() {
         progressWrapper.style.display = 'none';
         app.innerHTML = `
             <div class="card" style="text-align: center;">
-                <h2>Welcome!</h2>
+                <h2 class="title-font">Welcome</h2>
                 <p>Please scan the QR code to participate on your device, or enter the event key below:</p>
-                <div style="margin: 20px 0;">
-                    <img src="/static/qr.png" alt="Event QR Code" style="width: 200px; height: 200px; background: white; padding: 10px; border-radius: 8px;">
+                <div style="margin: 2rem 0;">
+                    <img src="/static/qr.png" alt="Event QR Code" style="width: 200px; height: 200px; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border-line);">
                 </div>
                 <form onsubmit="event.preventDefault(); window.location.search = '?key=' + document.getElementById('manual-key').value;">
-                    <input type="text" id="manual-key" class="btn" style="background:var(--idea-bubble-bg); color:var(--text); border:1px solid var(--border); text-align:center; margin-bottom:10px;" placeholder="ENTER KEY">
-                    <button type="submit" class="btn btn-primary">Join Event</button>
+                    <input type="text" id="manual-key" style="text-align:center; margin-bottom:1rem;" placeholder="ENTER KEY">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Join Event</button>
                 </form>
             </div>`;
         return;
@@ -73,10 +73,10 @@ function updateProgress() {
 function renderKioskStart() {
     updateProgress();
     app.innerHTML = `
-        <div class="card" style="text-align: center; padding: 60px 20px;">
-            <h1 style="font-size: 2.5rem; margin-bottom: 20px;">Share Your Ideas</h1>
-            <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 40px;">Take a quick poll and let your voice be heard.</p>
-            <button onclick="startKiosk()" class="btn btn-primary" style="font-size: 1.5rem; padding: 24px;">Start</button>
+        <div class="card" style="padding: 4rem 2rem;">
+            <h1 class="title-font" style="font-size: 3rem; margin-bottom: 1.5rem;">Share Your Ideas</h1>
+            <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 3rem;">Take a quick poll and let your voice be heard.</p>
+            <button onclick="startKiosk()" class="btn btn-primary" style="font-size: 1.25rem; padding: 1.5rem 3rem;">Start</button>
         </div>
     `;
 }
@@ -107,10 +107,10 @@ function renderQuestion() {
 
     if (currentIdx >= questions.length) {
         app.innerHTML = `
-            <div class="card" style="text-align: center;">
-                <h2>Thank you!</h2>
-                <p>Your feedback has been recorded.</p>
-                <button onclick="resetKiosk()" class="btn btn-primary" style="margin-top: 20px;">Finish</button>
+            <div class="card">
+                <h2 class="title-font">Thank you</h2>
+                <p>Your feedback has been recorded. This session will reset shortly.</p>
+                <button onclick="resetKiosk()" class="btn btn-primary" style="margin-top: 2rem;">Finish Now</button>
             </div>`;
         kioskTimer = setTimeout(resetKiosk, 10000);
         return;
@@ -118,8 +118,8 @@ function renderQuestion() {
 
     const q = questions[currentIdx];
     let html = `<div class="card">
-        <h2 style="color:var(--accent); margin-top:0;">${q.title}</h2>
-        <p style="color:var(--text-muted); margin-bottom:25px;">${q.description || ''}</p>
+        <h2 class="title-font">${q.title}</h2>
+        <p style="color:var(--text-muted); margin-bottom:2rem;">${q.description || ''}</p>
         <div class="options" id="options-container">`;
 
     if (q.type === 'single_select') {
@@ -127,40 +127,42 @@ function renderQuestion() {
             const isOther = opt.toLowerCase() === 'other';
             html += `<div class="poll-option" onclick="submitSingle(${q.id}, '${opt}')">${opt}</div>`;
             if (isOther) {
-                html += `<input type="text" id="other-input-${q.id}" class="btn" style="display:none; margin-bottom:10px; background:var(--idea-bubble-bg); color:var(--text); border:1px solid var(--border);" placeholder="Please specify...">`;
+                html += `<input type="text" id="other-input-${q.id}" style="display:none; margin-bottom:1rem;" placeholder="Please specify...">`;
             }
         });
     } else if (q.type === 'multi_select') {
         q.options.forEach((opt, i) => {
             const isOther = opt.toLowerCase() === 'other';
             html += `
-                <label class="poll-option" style="display:flex; align-items:center; gap:12px;">
-                    <input type="checkbox" name="multi" value="${opt}" style="width:20px; height:20px; margin:0;" onchange="${isOther ? `document.getElementById('other-input-${q.id}').style.display = this.checked ? 'block' : 'none'` : ''}">
+                <label class="poll-option">
+                    <input type="checkbox" name="multi" value="${opt}" style="width:1.25rem; height:1.25rem; margin:0;" onchange="${isOther ? `document.getElementById('other-input-${q.id}').style.display = this.checked ? 'block' : 'none'` : ''}">
                     <span>${opt}</span>
                 </label>`;
             if (isOther) {
-                html += `<input type="text" id="other-input-${q.id}" class="btn" style="display:none; margin-bottom:10px; background:var(--idea-bubble-bg); color:var(--text); border:1px solid var(--border);" placeholder="Please specify...">`;
+                html += `<input type="text" id="other-input-${q.id}" style="display:none; margin-bottom:1rem;" placeholder="Please specify...">`;
             }
         });
-        html += `</div><button class="btn btn-primary" style="margin-top:20px;" onclick="submitMulti(${q.id})">Submit Selection</button>`;
+        html += `</div><button class="btn btn-primary" style="margin-top:2rem; width:100%;" onclick="submitMulti(${q.id})">Submit Selection</button>`;
     } else if (q.type === 'short_text' || q.type === 'word_cloud') {
-        html += `<textarea id="text-input" class="btn" style="background:var(--idea-bubble-bg); color:var(--text); border:1px solid var(--border); text-align:left; min-height:100px;" placeholder="Type your response..."></textarea>
-                 <button class="btn btn-primary" style="margin-top:10px;" onclick="submitText(${q.id})">Submit</button>`;
+        html += `<textarea id="text-input" style="min-height:120px;" placeholder="Type your response..."></textarea>
+                 <button class="btn btn-primary" style="margin-top:1rem; width:100%;" onclick="submitText(${q.id})">Submit Response</button>`;
     } else if (q.type === 'ranking') {
         html += `<div id="sortable-list">`;
         q.options.forEach(opt => {
             html += `
                 <div class="poll-option ranking-item" data-id="${opt}">
-                    <span class="drag-handle">☰</span>
+                    <span class="drag-handle" style="color:var(--rosy); display: flex; align-items: center;">
+                        <svg viewBox="0 0 24 24" style="width:1.5rem; height:1.5rem; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round;"><path d="M8 9h8M8 12h8M8 15h8"/></svg>
+                    </span>
                     <span>${opt}</span>
                 </div>`;
         });
-        html += `</div><button class="btn btn-primary" style="margin-top:20px;" onclick="submitRanking(${q.id})">Submit Ranking</button>`;
+        html += `</div><button class="btn btn-primary" style="margin-top:2rem; width:100%;" onclick="submitRanking(${q.id})">Submit Ranking</button>`;
     }
 
     html += `</div></div>`;
 
-    html += `<button onclick="resetKiosk()" class="btn" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); margin-top: 20px;">Home</button>`;
+    html += `<button onclick="resetKiosk()" class="btn btn-secondary" style="width:100%; margin-top: 1rem;">Cancel & Reset</button>`;
 
     app.innerHTML = html;
 
@@ -250,13 +252,13 @@ async function submitText(questionId) {
 
 async function renderVotingSession(questionId) {
     app.innerHTML = `
-        <div class="card" style="text-align: center;">
-            <h2 style="color:var(--accent);">Great Idea!</h2>
-            <p style="margin-bottom:20px;">What do you think of these other ideas from the community?</p>
-            <div id="vote-container" style="text-align:left;">
+        <div class="card">
+            <h2 class="title-font">Great Idea</h2>
+            <p style="margin-bottom:2rem;">What do you think of these other ideas from the community?</p>
+            <div id="vote-container">
                 <p>Loading others...</p>
             </div>
-            <button onclick="currentIdx++; renderQuestion();" class="btn btn-primary" style="margin-top:20px; background:var(--text-muted);">Next Question</button>
+            <button onclick="currentIdx++; renderQuestion();" class="btn btn-secondary" style="margin-top:2rem; width:100%;">Skip to Next Question</button>
         </div>
     `;
 
@@ -271,11 +273,15 @@ async function renderVotingSession(questionId) {
         }
 
         container.innerHTML = data.map(r => `
-            <div class="poll-option" style="cursor:default; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <div class="poll-option" style="cursor:default; justify-content:space-between;">
                 <span style="flex:1;">${r.text}</span>
-                <div style="display:flex; gap:5px;">
-                    <button onclick="voteResponse(${r.id}, 'up', ${questionId}, this)" class="btn" style="padding:5px 10px; background:#22c55e; border:none; color:white;">↑</button>
-                    <button onclick="voteResponse(${r.id}, 'down', ${questionId}, this)" class="btn" style="padding:5px 10px; background:#ef4444; border:none; color:white;">↓</button>
+                <div style="display:flex; gap:0.5rem;">
+                    <button onclick="voteResponse(${r.id}, 'up', ${questionId}, this)" class="btn btn-secondary" style="padding:0.5rem; width:40px; height:40px;">
+                        <svg viewBox="0 0 24 24" class="icon" style="color:var(--success)"><path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <button onclick="voteResponse(${r.id}, 'down', ${questionId}, this)" class="btn btn-secondary" style="padding:0.5rem; width:40px; height:40px;">
+                        <svg viewBox="0 0 24 24" class="icon" style="color:var(--danger)"><path d="M12 5v14M12 19l-7-7M12 19l7-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                 </div>
             </div>
         `).join('');

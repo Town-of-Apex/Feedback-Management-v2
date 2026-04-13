@@ -9,19 +9,19 @@
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <h1 id="event-title">{{ event_name }}</h1>
-            <div class="progress-container" id="progress-wrapper" style="display:none;">
+    <div class="container" style="max-width: 600px;">
+        <header style="margin-bottom: 3rem;">
+            <h1 id="event-title" class="title-font" style="font-size: 1.25rem; color: var(--rosy); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">{{ event_name }}</h1>
+            <div class="progress-container" id="progress-wrapper" style="display:none; margin: 0;">
                 <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
             </div>
-            <p id="progress" style="font-size: 0.8rem; color: var(--text-muted);"></p>
+            <p id="progress" style="font-size: 0.75rem; color: var(--rosy); margin-top: 0.5rem; font-weight: 600;"></p>
         </header>
 
         <main id="app">
             <!-- SPA Content Loaded via JS -->
             <div class="card">
-                <p>Loading questions...</p>
+                <p>Establishing connection...</p>
             </div>
         </main>
     </div>

@@ -11,21 +11,25 @@
 </head>
 
 <body>
-    <div class="display-wrapper">
-        <aside class="display-sidebar">
-            <h1 class="event-name-large">{{ event_name }}</h1>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Join the Conversation</p>
-            <img src="/static/qr.png" alt="Scan to participate">
-            <p style="font-weight: bold; font-size: 1.2rem; margin-top: 10px;">Scan to Join</p>
-            <p id="tunnel-url" style="color: var(--primary); font-family: monospace;"></p>
-        </aside>
-
-        <main class="display-main">
-            <div id="charts" class="chart-grid">
-                <!-- Charts injected here -->
+    <header class="display-header">
+        <div>
+            <h1>{{ event_name }}</h1>
+            <p style="opacity: 0.8; margin-top: 0.5rem;">Live Community Feedback</p>
+        </div>
+        <div class="display-qr-panel">
+            <div class="display-info">
+                <div class="label">Scan to Participate</div>
+                <div class="value" id="tunnel-url">Loading...</div>
             </div>
-        </main>
-    </div>
+            <img src="/static/qr.png" alt="Scan to participate" class="display-qr-img">
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 100%; padding: 0 2rem;">
+        <div id="charts" class="chart-grid">
+            <!-- Charts injected here -->
+        </div>
+    </main>
 
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="/static/js/charts.js"></script>
