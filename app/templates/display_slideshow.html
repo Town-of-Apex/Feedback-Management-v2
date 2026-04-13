@@ -97,37 +97,40 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: var(--border);
+            background: var(--border-line);
             transition: background 0.3s, transform 0.3s;
         }
 
         .carousel-dot.active {
-            background: var(--accent);
+            background: var(--teal);
             transform: scale(1.3);
         }
     </style>
 </head>
 
 <body>
-    <div class="display-wrapper">
-        <aside class="display-sidebar">
-            <h1 class="event-name-large">{{ event_name }}</h1>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Join the Conversation</p>
-            <img src="/static/qr.png" alt="Scan to participate">
-            <p style="font-weight: bold; font-size: 1.2rem; margin-top: 10px;">Scan to Join</p>
-            <p id="tunnel-url" style="color: var(--primary); font-family: monospace;"></p>
-        </aside>
-
-        <!-- display-main-slideshow replaces the normal display-main class -->
-        <main class="display-main-slideshow">
-            <div class="carousel-viewport" id="carousel-viewport">
-                <div class="carousel-track" id="carousel-track">
-                    <!-- Slide pages injected here by JS -->
-                </div>
+    <header class="display-header">
+        <div>
+            <h1>{{ event_name }}</h1>
+            <p style="opacity: 0.8; margin-top: 0.5rem;">Live Community Feedback (Slideshow)</p>
+        </div>
+        <div class="display-qr-panel">
+            <div class="display-info">
+                <div class="label">Scan to Participate</div>
+                <div class="value" id="tunnel-url">Loading...</div>
             </div>
-            <div class="carousel-dots" id="carousel-dots"></div>
-        </main>
-    </div>
+            <img src="/static/qr.png" alt="Scan to participate" class="display-qr-img">
+        </div>
+    </header>
+
+    <main class="display-main-slideshow" style="padding: 0 2rem; height: calc(100vh - 200px);">
+        <div class="carousel-viewport" id="carousel-viewport">
+            <div class="carousel-track" id="carousel-track">
+                <!-- Slide pages injected here by JS -->
+            </div>
+        </div>
+        <div class="carousel-dots" id="carousel-dots"></div>
+    </main>
 
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="/static/js/slideshow.js"></script>

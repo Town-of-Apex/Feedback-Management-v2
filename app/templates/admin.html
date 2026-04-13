@@ -4,79 +4,21 @@
 <head>
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 8px;
-            margin: 4px 0;
-            background: var(--idea-bubble-bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            border-radius: 4px;
-        }
-
-        .btn-active {
-            background: var(--success);
-            color: #fff;
-            padding: 4px 8px;
-            width: auto;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-inactive {
-            background: var(--text-muted);
-            color: #fff;
-            padding: 4px 8px;
-            width: auto;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-delete {
-            background: var(--danger);
-            color: #fff;
-            padding: 4px 8px;
-            width: auto;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
 </head>
 
 <body>
-    <div class="container" style="max-width: 900px;">
-        <header>
-            <h1>Admin Dashboard</h1>
-            <div style="margin-bottom: 10px;">
-                <a href="/" target="_blank" class="btn btn-primary"
-                    style="display:inline-block; width:auto; padding:8px 16px; background: #818cf8;">Launch
-                    Kiosk Mode</a>
-                <a href="/display" target="_blank" class="btn btn-primary"
-                    style="display:inline-block; width:auto; padding:8px 16px; margin-left:10px;">Open Display Board</a>
-                <a href="/admin/export" class="btn btn-primary"
-                    style="display:inline-block; width:auto; padding:8px 16px; margin-left:10px; background: #10b981;">Export Responses (CSV)</a>
-            </div>
-        </header>
+    <header class="nav-header">
+        <div class="nav-container">
+            <h1 class="title-font" style="font-size: 1.5rem; margin: 0;">Admin Dashboard</h1>
+            <nav class="nav-links">
+                <a href="/" target="_blank" class="nav-link">Kiosk Mode</a>
+                <a href="/display" target="_blank" class="nav-link">Display Board</a>
+                <a href="/admin/export" class="nav-link">Export Responses</a>
+            </nav>
+        </div>
+    </header>
 
+    <div class="container">
         <section class="card">
             <h2>Add New Question</h2>
             <form action="/admin/questions/add" method="POST">
@@ -90,7 +32,7 @@
                     <option value="ranking">Ranking</option>
                 </select>
                 <input type="text" name="options" placeholder="Options (comma separated for polls)">
-                <button type="submit" class="btn btn-primary" style="margin-top:10px;">Add Question</button>
+                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Add Question</button>
             </form>
         </section>
 
@@ -110,19 +52,20 @@
                         <td>{{ q.title }}</td>
                         <td>{{ q.type }}</td>
                         <td>
-                            <form action="/admin/questions/{{q.id}}/toggle" method="POST" style="display:inline;">
-                                <button type="submit"
-                                    class="{% if q.active %}btn-active{% else %}btn-inactive{% endif %}">
-                                    {% if q.active %}Deactivate{% else %}Activate{% endif %}
-                                </button>
-                            </form>
-                            <a href="/admin/questions/{{q.id}}/edit" class="btn-edit" 
-                               style="display:inline-block; border-radius: 4px; padding: 4px 8px; background: #6366f1; color: #fff; text-decoration: none; margin-left: 5px; font-size: 13.33px;">Edit</a>
-                            <form action="/admin/questions/{{q.id}}/delete" method="POST"
-                                style="display:inline; margin-left: 5px;"
-                                onsubmit="return confirm('Delete this question and all its responses?');">
-                                <button type="submit" class="btn-delete">Delete</button>
-                            </form>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <form action="/admin/questions/{{q.id}}/toggle" method="POST" style="margin: 0;">
+                                    <button type="submit" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">
+                                        {% if q.active %}Deactivate{% else %}Activate{% endif %}
+                                    </button>
+                                </form>
+                                <a href="/admin/questions/{{q.id}}/edit" class="btn btn-secondary" 
+                                   style="padding: 0.4rem 0.8rem; font-size: 0.75rem; text-decoration: none;">Edit</a>
+                                <form action="/admin/questions/{{q.id}}/delete" method="POST"
+                                    style="margin: 0;"
+                                    onsubmit="return confirm('Delete this question and all its responses?');">
+                                    <button type="submit" class="btn btn-secondary" style="color: var(--danger); padding: 0.4rem 0.8rem; font-size: 0.75rem;">Delete</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
