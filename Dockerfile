@@ -13,7 +13,7 @@ COPY . .
 # Ensure entrypoint is executable
 RUN chmod +x entrypoint.sh
 
-ENV APPLICATION_ROOT=/feedback
+ENV BASE_PATH=/feedback
 EXPOSE 8080
 
 ENTRYPOINT ["./entrypoint.sh"]

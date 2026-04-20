@@ -24,7 +24,7 @@ const getEventKey = () => {
     return stored || (typeof EVENT_KEY !== 'undefined' ? EVENT_KEY : null);
 };
 
-const root = typeof SCRIPT_ROOT !== 'undefined' ? SCRIPT_ROOT : '';
+const root = typeof APP_BASE_PATH !== 'undefined' ? APP_BASE_PATH : '';
 
 async function init() {
     const key = getEventKey();

@@ -32,12 +32,15 @@ if [ -z "$TUNNEL_URL" ]; then
     TUNNEL_URL="http://localhost:8080"
 fi
 
-echo "Public URL: $TUNNEL_URL/feedback/?key=$EVENT_KEY"
-echo "$TUNNEL_URL/feedback/?key=$EVENT_KEY" > app/static/tunnel_url.txt
+# AAS-1.0: Retrieve BASE_PATH from environment
+BASE_PATH_CLEAN=$(echo ${BASE_PATH:-/feedback} | sed 's/\/$//')
+
+echo "Public URL: $TUNNEL_URL$BASE_PATH_CLEAN/?key=$EVENT_KEY"
+echo "$TUNNEL_URL$BASE_PATH_CLEAN/?key=$EVENT_KEY" > app/static/tunnel_url.txt
 
 # Generate QR code (using a simple python script)
-# Use 'feedback' sub-path to match hub routing
-python -c "import qrcode, os; img = qrcode.make('$TUNNEL_URL/feedback/?key=' + os.getenv('EVENT_KEY', '')); img.save('app/static/qr.png')"
+# Use BASE_PATH to match hub routing
+python -c "import qrcode, os; bp = os.getenv('BASE_PATH', '/feedback').rstrip('/'); img = qrcode.make('$TUNNEL_URL' + bp + '/?key=' + os.getenv('EVENT_KEY', '')); img.save('app/static/qr.png')"
 
 # Keep the script running
 wait $flask_pid

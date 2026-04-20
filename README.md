@@ -60,26 +60,66 @@ docker compose logs -f
 
 ---
 
+---
+
+## 🌐 Nginx Sub-path Deployment (AAS-1.0)
+
+This application is compliant with the **Apex Internal Application Standard (AAS-1.0)**, meaning it can be easily routed behind an Nginx reverse proxy at a specific sub-path (e.g., `/feedback/`).
+
+### 1. Configure the Application
+In your `.env` or Docker configuration, set the `BASE_PATH` variable:
+```env
+BASE_PATH=/feedback
+```
+
+### 2. Update Nginx Configuration
+To route traffic to this application, add a location block to your Nginx site configuration (usually found in `/etc/nginx/sites-available/default` or similar).
+
+**Ubuntu Commands to Edit Nginx:**
+```bash
+# Open the configuration file
+sudo nano /etc/nginx/sites-available/default
+
+# After editing, test the configuration
+sudo nginx -t
+
+# If successful, reload Nginx
+sudo systemctl reload nginx
+```
+
+**Nginx Location Block:**
+```nginx
+location /feedback/ {
+    proxy_pass http://localhost:8080/feedback/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # Required for WebSockets (Socket.IO)
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
+```
+
+---
+
 ## 📱 Device & Page Routing
 
-Once the application is running, you can access the following pages on your devices.
-
-_(Note: If you are connecting from the same machine or local network, you can use `http://localhost:8080`. For external devices over the internet, look for the generated `.lhr.life` or `.localhost.run` link printed in your Docker logs or found in `app/static/tunnel_url.txt`)_
+Once the application is running, you can access the following pages. The paths below assume a `BASE_PATH` of `/feedback`.
 
 ### 1. The Audience Device (Public Kiosk)
-
-- **URL**: `http://localhost:8080/?key=YOUR_EVENT_KEY` (or the generic public tunnel URL with your key appended)
-- **Purpose**: This is the mobile-friendly page where event attendees submit their feedback. You should print or display the automatically generated QR code (`app/static/qr.png`) for users to scan with their phones.
+- **URL**: `http://localhost:8080/feedback/?key=YOUR_EVENT_KEY`
+- **Purpose**: Mobile-friendly submission page. Use the generated QR code (`app/static/qr.png`).
 
 ### 2. The Main Screen (Live Display Board)
-
-- **URL**: `http://localhost:8080/display`
-- **Purpose**: This page should be opened on the main projector or large monitor at your event. It visualizes the incoming data in real-time, displaying bar charts, word clouds, and safe text responses as they are submitted.
+- **URL**: `http://localhost:8080/feedback/display/`
+- **Purpose**: Real-time visualization for the main projector.
 
 ### 3. The Organizer Device (Admin Dashboard)
-
-- **URL**: `http://localhost:8080/admin`
-- **Purpose**: Open this on your personal laptop or tablet. You will be prompted to enter your `ADMIN_PASSWORD`. Here, you can actively manage questions, toggle which questions are visible to the audience, and monitor overall engagement.
+- **URL**: `http://localhost:8080/feedback/admin/`
+- **Purpose**: Manage questions and monitor engagement. Requires `ADMIN_PASSWORD`.
 
 ---
 

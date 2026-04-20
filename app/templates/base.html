@@ -18,8 +18,8 @@
 </head>
 
 <body>
-    <!-- SCRIPT_ROOT for JS -->
-    <script>const SCRIPT_ROOT = "{{ script_root }}";</script>
+    <!-- AAS-1.0: Inject global base path for Javascript -->
+    <script>window.APP_BASE_PATH = "{{ app_base_path }}";</script>
 
     <!-- STANDARD HEADER -->
     <header>
