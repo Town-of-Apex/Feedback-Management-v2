@@ -1,146 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ event_name }} | Live Slideshow</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
-    <style>
-        /* Override base styles: lock the page to viewport, no scrolling ever */
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
+{% block title %}{{ event_name }} | Live Slideshow{% endblock %}
 
-        /* Slideshow variant of the display layout — no overflow on main */
-        .display-main-slideshow {
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            min-height: 0; /* critical for flex children to shrink */
-        }
+{% block styles %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
+<style>
+    /* Override base styles: lock the page to viewport, no scrolling ever */
+    html, body {
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    .main-content {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
 
-        /*
-         * The carousel viewport: clips the track.
-         * Takes all available height from the flex parent.
-         */
-        .carousel-viewport {
-            flex: 1;
-            min-height: 0;
-            overflow: hidden;
-            position: relative;
-        }
+    .carousel-viewport {
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        position: relative;
+    }
 
-        /*
-         * The track: all slide-pages sit side by side here.
-         * Width is set dynamically in JS based on page count.
-         * transition drives the smooth horizontal slide.
-         */
-        .carousel-track {
-            display: flex;
-            height: 100%;
-            transition: transform 0.7s cubic-bezier(0.77, 0, 0.18, 1);
-            will-change: transform;
-        }
+    .carousel-track {
+        display: flex;
+        height: 100%;
+        transition: transform 0.7s cubic-bezier(0.77, 0, 0.18, 1);
+        will-change: transform;
+    }
 
-        /*
-         * Each slide-page shows exactly 2 charts.
-         * Width is set dynamically to match the viewport width in JS.
-         */
-        .carousel-page {
-            flex-shrink: 0;
-            height: 100%;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            padding: 0; /* no extra padding; cards already have padding */
-        }
+    .carousel-page {
+        flex-shrink: 0;
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 0;
+    }
 
-        /* Cards must fill available space without pushing out */
-        .carousel-page .card {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 0;
-            min-height: 0;
-            overflow: hidden;
-        }
+    .carousel-page .card {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0;
+        min-height: 0;
+        overflow: hidden;
+        padding: 2rem; /* slightly less padding for slideshow */
+    }
 
-        /* Chart canvas: fill the card but never overflow it */
-        .carousel-page .card canvas {
-            flex: 1;
-            min-height: 0;
-            width: 100% !important;
-            height: 100% !important;
-        }
+    .carousel-page .card canvas {
+        flex: 1;
+        min-height: 0;
+        width: 100% !important;
+        height: 100% !important;
+    }
 
-        /* Ideas list: fill remaining card space, scrollable within card */
-        .carousel-page .card .ideas-list {
-            flex: 1;
-            overflow-y: auto;
-            max-height: none;
-        }
+    .carousel-dots {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 0 4px;
+        flex-shrink: 0;
+    }
 
-        /* Progress dots indicator */
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 0 4px;
-            flex-shrink: 0;
-        }
+    .carousel-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border-line);
+        transition: background 0.3s, transform 0.3s;
+    }
 
-        .carousel-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--border-line);
-            transition: background 0.3s, transform 0.3s;
-        }
+    .carousel-dot.active {
+        background: var(--brand-teal);
+        transform: scale(1.3);
+    }
+</style>
+{% endblock %}
 
-        .carousel-dot.active {
-            background: var(--teal);
-            transform: scale(1.3);
-        }
-    </style>
-</head>
+{% block nav %}
+<span class="metadata" style="color: var(--brand-teal);">Auto Slideshow</span>
+{% endblock %}
 
-<body>
-    <header class="display-header">
-        <div>
-            <h1>{{ event_name }}</h1>
-            <p style="opacity: 0.8; margin-top: 0.5rem;">Live Community Feedback (Slideshow)</p>
+{% block content %}
+<div class="display-header" style="padding: 1.5rem 2rem; margin-bottom: 1rem;">
+    <div>
+        <h1 style="color: white; margin: 0; font-size: 1.5rem;">{{ event_name }}</h1>
+        <p style="opacity: 0.8; margin-top: 0.25rem; color: white; font-size: 0.8rem;">Live Community Feedback (Slideshow)</p>
+    </div>
+    <div class="display-qr-panel" style="padding: 0.5rem 1rem;">
+        <div class="display-info">
+            <div class="label" style="font-size: 0.65rem;">Step 1: Scan</div>
+            <div class="value" id="tunnel-url" style="font-size: 1rem;">Loading...</div>
         </div>
-        <div class="display-qr-panel">
-            <div class="display-info">
-                <div class="label">Scan to Participate</div>
-                <div class="value" id="tunnel-url">Loading...</div>
-            </div>
-            <img src="/static/qr.png" alt="Scan to participate" class="display-qr-img">
-        </div>
-    </header>
+        <img src="{{ url_for('static', filename='qr.png') }}" alt="Scan to participate" class="display-qr-img" style="width: 60px; height: 60px;">
+    </div>
+</div>
 
-    <main class="display-main-slideshow" style="padding: 0 2rem; height: calc(100vh - 200px);">
-        <div class="carousel-viewport" id="carousel-viewport">
-            <div class="carousel-track" id="carousel-track">
-                <!-- Slide pages injected here by JS -->
-            </div>
-        </div>
-        <div class="carousel-dots" id="carousel-dots"></div>
-    </main>
+<div class="carousel-viewport" id="carousel-viewport">
+    <div class="carousel-track" id="carousel-track">
+        <!-- Slide pages injected here by JS -->
+    </div>
+</div>
+<div class="carousel-dots" id="carousel-dots"></div>
+{% endblock %}
 
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script src="/static/js/slideshow.js"></script>
-    <script>
-        const socket = io();
-        socket.on('new_response', (data) => {
-            console.log('Update received for question:', data.question_id);
-            if (window.updateCharts) window.updateCharts();
-        });
-    </script>
-</body>
-
-</html>
+{% block scripts %}
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/slideshow.js') }}"></script>
+<script>
+    const socket = io({ path: SCRIPT_ROOT + '/socket.io' });
+    socket.on('new_response', (data) => {
+        console.log('Update received for question:', data.question_id);
+        if (window.updateCharts) window.updateCharts();
+    });
+</script>
+{% endblock %}

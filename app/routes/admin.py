@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session, jsonify, make_response
+from flask import Blueprint, render_template, request, redirect, session, jsonify, make_response, url_for
 import os
 import io
 import csv
@@ -22,14 +22,14 @@ def add_question():
     )
     db.session.add(new_q)
     db.session.commit()
-    return redirect('/admin')
+    return redirect(url_for('admin.dashboard'))
 
 @admin_bp.route('/questions/<int:id>/toggle', methods=['POST'])
 def toggle_question(id):
     q = Question.query.get_or_404(id)
     q.active = not q.active
     db.session.commit()
-    return redirect('/admin')
+    return redirect(url_for('admin.dashboard'))
 
 @admin_bp.route('/questions/<int:id>/edit', methods=['GET', 'POST'])
 def edit_question(id):
@@ -56,7 +56,7 @@ def edit_question(id):
         )
         db.session.add(new_q)
         db.session.commit()
-        return redirect('/admin')
+        return redirect(url_for('admin.dashboard'))
     
     # Otherwise, update the existing one
     q.title = data.get('title')
@@ -65,7 +65,7 @@ def edit_question(id):
     q.options = data.get('options', '').split(',') if data.get('options') else []
     
     db.session.commit()
-    return redirect('/admin')
+    return redirect(url_for('admin.dashboard'))
 
 @admin_bp.route('/export')
 def export_data():
@@ -114,4 +114,4 @@ def delete_question(id):
     q = Question.query.get_or_404(id)
     db.session.delete(q)
     db.session.commit()
-    return redirect('/admin')
+    return redirect(url_for('admin.dashboard'))

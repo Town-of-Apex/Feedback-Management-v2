@@ -1,35 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ event_name }} | Feedback</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
+{% block title %}{{ event_name }} | Feedback{% endblock %}
 
-<body>
-    <div class="container" style="max-width: 600px;">
-        <header style="margin-bottom: 3rem;">
-            <h1 id="event-title" class="title-font" style="font-size: 1.25rem; color: var(--rosy); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">{{ event_name }}</h1>
-            <div class="progress-container" id="progress-wrapper" style="display:none; margin: 0;">
-                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
-            </div>
-            <p id="progress" style="font-size: 0.75rem; color: var(--rosy); margin-top: 0.5rem; font-weight: 600;"></p>
-        </header>
-
-        <main id="app">
-            <!-- SPA Content Loaded via JS -->
-            <div class="card">
-                <p>Establishing connection...</p>
-            </div>
-        </main>
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <p class="metadata">{{ event_name }}</p>
+    
+    <div class="progress-container" id="progress-wrapper" style="display:none; margin: 1rem 0;">
+        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
     </div>
+    <p id="progress" class="metadata" style="text-transform: none; margin-bottom: 2rem;"></p>
 
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.7.2/dist/socket.io.min.js"></script>
-    <script>const EVENT_KEY = "{{ event_key }}";</script>
-    <script src="/static/js/app.js"></script>
-</body>
+    <div id="app">
+        <!-- SPA Content Loaded via JS -->
+        <div class="inner-well" style="text-align: center; padding: 3rem;">
+            <p>Establishing connection...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-</html>
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.7.2/dist/socket.io.min.js"></script>
+<script>
+    const EVENT_KEY = "{{ event_key }}";
+</script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

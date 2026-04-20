@@ -1,46 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ event_name }} | Live Results</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
-</head>
+{% block title %}{{ event_name }} | Live Results{% endblock %}
 
-<body>
-    <header class="display-header">
-        <div>
-            <h1>{{ event_name }}</h1>
-            <p style="opacity: 0.8; margin-top: 0.5rem;">Live Community Feedback</p>
+{% block styles %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
+<style>
+    /* Display board overrides for full screen */
+    .main-content { padding-top: 1.5rem; }
+</style>
+{% endblock %}
+
+{% block nav %}
+<span class="metadata" style="color: var(--brand-teal);">Live Feed Active</span>
+{% endblock %}
+
+{% block content %}
+<div class="display-header">
+    <div>
+        <h1 style="color: white; margin: 0;">{{ event_name }}</h1>
+        <p style="opacity: 0.8; margin-top: 0.5rem; color: white;">Live Community Feedback</p>
+    </div>
+    <div class="display-qr-panel">
+        <div class="display-info">
+            <div class="label">Step 1: Scan</div>
+            <div class="value" id="tunnel-url">Loading...</div>
         </div>
-        <div class="display-qr-panel">
-            <div class="display-info">
-                <div class="label">Scan to Participate</div>
-                <div class="value" id="tunnel-url">Loading...</div>
-            </div>
-            <img src="/static/qr.png" alt="Scan to participate" class="display-qr-img">
-        </div>
-    </header>
+        <img src="{{ url_for('static', filename='qr.png') }}" alt="Scan to participate" class="display-qr-img">
+    </div>
+</div>
 
-    <main class="container" style="max-width: 100%; padding: 0 2rem;">
-        <div id="charts" class="chart-grid">
-            <!-- Charts injected here -->
-        </div>
-    </main>
+<div id="charts" class="chart-grid">
+    <!-- Charts injected here -->
+</div>
+{% endblock %}
 
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script src="/static/js/charts.js"></script>
-    <script>
-        const socket = io();
-        socket.on('new_response', (data) => {
-            console.log('Update received for question:', data.question_id);
-            // Re-fetch or update chart
-            if (window.updateCharts) window.updateCharts();
-        });
-    </script>
-</body>
-
-</html>
+{% block scripts %}
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+    const socket = io({ path: SCRIPT_ROOT + '/socket.io' });
+    socket.on('new_response', (data) => {
+        console.log('Update received for question:', data.question_id);
+        if (window.updateCharts) window.updateCharts();
+    });
+</script>
+{% endblock %}

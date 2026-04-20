@@ -19,16 +19,16 @@ const CHART_COLORS = [
 /* Match --bg-surface from CSS */
 const WORDCLOUD_BG = '#ffffff';
 
+const root = typeof SCRIPT_ROOT !== 'undefined' ? SCRIPT_ROOT : '';
+
 /* Match --text-main and --border-line from CSS */
 const TICK_COLOR = '#1a1a1a';
 const GRID_COLOR = '#e1e4e8';
 
-// ─────────────────────────────────────────────────────────────────────────────
-
 let pollCharts = {};
 
 async function updateCharts() {
-    const res = await fetch('/results');
+    const res = await fetch(root + '/results');
     const data = await res.json();
     const container = document.getElementById('charts');
 
@@ -206,12 +206,24 @@ function renderIdeas(q, container) {
         </div>
     `).join('');
 
-    }
 }
 
 async function updateTunnelUrl() {
     try {
-        const res = await fetch('/static/tunnel_url.txt');
+        const res = await fetch(root + '/static/tunnel_url.txt');
+        if (res.ok) {
+            const url = await res.text();
+            document.getElementById('tunnel-url').innerText = url.trim();
+        }
+    } catch (e) {
+        console.log("Tunnel URL file not found yet.");
+    }
+}
+
+window.updateCharts = updateCharts;
+updateCharts();
+updateTunnelUrl();
+setInterval(updateTunnelUrl, 30000);('/static/tunnel_url.txt');
         if (res.ok) {
             const url = await res.text();
             document.getElementById('tunnel-url').innerText = url.trim();
