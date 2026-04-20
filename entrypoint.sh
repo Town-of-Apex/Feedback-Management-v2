@@ -32,11 +32,12 @@ if [ -z "$TUNNEL_URL" ]; then
     TUNNEL_URL="http://localhost:8080"
 fi
 
-echo "Public URL: $TUNNEL_URL?key=$EVENT_KEY"
-echo "$TUNNEL_URL?key=$EVENT_KEY" > app/static/tunnel_url.txt
+echo "Public URL: $TUNNEL_URL/feedback/?key=$EVENT_KEY"
+echo "$TUNNEL_URL/feedback/?key=$EVENT_KEY" > app/static/tunnel_url.txt
 
 # Generate QR code (using a simple python script)
-python -c "import qrcode, os; img = qrcode.make('$TUNNEL_URL?key=' + os.getenv('EVENT_KEY', '')); img.save('app/static/qr.png')"
+# Use 'feedback' sub-path to match hub routing
+python -c "import qrcode, os; img = qrcode.make('$TUNNEL_URL/feedback/?key=' + os.getenv('EVENT_KEY', '')); img.save('app/static/qr.png')"
 
 # Keep the script running
 wait $flask_pid
