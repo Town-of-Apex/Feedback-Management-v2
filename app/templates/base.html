@@ -6,17 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ event_name or 'Civic Feedback' }}{% endblock %}</title>
 
-    <!-- 1. Universal CSS -->
-    <link rel="stylesheet" href="{{ app_root }}/static/css/apex-modern.css">
-    <!-- 2. App-specific styles -->
-    <link rel="stylesheet" href="{{ app_root }}/static/css/style.css">
+    <!-- Handle sub-path routing by setting the base URL for all relative links -->
+    <base href="{{ base_url }}">
+
+    <!-- 1. Universal CSS (Relative to <base>) -->
+    <link rel="stylesheet" href="static/css/apex-modern.css">
+    <!-- 2. App-specific styles (Relative to <base>) -->
+    <link rel="stylesheet" href="static/css/style.css">
 
     {% block styles %}{% endblock %}
 </head>
 
 <body>
     <!-- SCRIPT_ROOT for JS -->
-    <script>const SCRIPT_ROOT = "{{ app_root }}";</script>
+    <script>const SCRIPT_ROOT = "{{ script_root }}";</script>
 
     <!-- STANDARD HEADER -->
     <header>
@@ -24,7 +27,7 @@
             <div class="header-content"
                 style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                 <div style="display: flex; align-items: center; gap: 1rem;">
-                    <img src="{{ app_root }}/static/logo.svg" class="app-logo" alt="App Logo">
+                    <img src="static/logo.svg" class="app-logo" alt="App Logo">
                     <h1 class="title-display">{% block header_title %}{{ event_name or 'Feedback Management' }}{%
                         endblock %}</h1>
                 </div>

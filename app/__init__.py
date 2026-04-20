@@ -50,7 +50,10 @@ def create_app():
     @app.context_processor
     def inject_vars():
         # Force script_root if APPLICATION_ROOT is set
-        root = os.getenv('APPLICATION_ROOT', '')
-        return dict(app_root=root)
+        root = os.getenv('APPLICATION_ROOT', '').rstrip('/')
+        return dict(
+            base_url=root + '/',
+            script_root=root
+        )
     
     return app
