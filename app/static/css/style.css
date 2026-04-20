@@ -1,223 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap');
-
 /* 
  * ═══════════════════════════════════════════════════════
- *  APEX MODERN DESIGN SYSTEM
- *  Professional, Structured, institutional aesthetic.
+ *  APP SPECIFIC EXTENSIONS (Feedback Management)
+ *  Extends apex-modern.css
  * ═══════════════════════════════════════════════════════
  */
 
+/* Override/Extend root variables if needed */
 :root {
-  /* Surface Layering */
-  --bg-canvas: #f8f9fa;  /* L0: Root background */
-  --bg-surface: #ffffff; /* L1: Cards, Primary Containers */
-  --bg-inner: #f1f3f5;   /* L2: Inputs, Recessed sections */
-
-  /* Brand Colors */
-  --teal: #005a70;       /* Primary Action/Emphasis */
-  --rosy: #968f8b;       /* Metadata/Supportive text */
   --teal-soft: rgba(0, 90, 112, 0.1);
-
-  /* Functional Colors */
-  --text-main: #1a1a1a;
-  --text-muted: var(--rosy);
-  --border-line: #e1e4e8;
-  --danger: #9d174d;     /* Deep rosy red */
-  --success: #065f46;    /* Deep teal green */
-
-  /* Geometry */
-  --radius-btn: 6px;
-  --radius-card: 12px;
-  --radius-modal: 16px;
-
-  /* Transitions */
-  --transition: 300ms ease-out;
+  --danger: #9d174d;
+  --success: #065f46;
 }
 
-/* ═══════════════════════════════════════════════════════
- *  BASE STYLES
- * ═══════════════════════════════════════════════════════ */
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background-color: var(--bg-canvas);
-  color: var(--text-main);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  margin: 0;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, .title-font {
-  font-family: 'DM Serif Display', serif;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  margin-top: 0;
-  color: var(--teal);
-  text-align: left; /* Traditional Anchor */
-}
-
-h1 { font-size: 2.25rem; margin-bottom: 0.5rem; }
-h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }
-h3 { font-size: 1.25rem; margin-bottom: 1rem; }
-
-p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-.container {
-  max-width: 1152px; /* max-w-6xl */
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-/* ═══════════════════════════════════════════════════════
- *  COMPONENTS
- * ═══════════════════════════════════════════════════════ */
-
-.card {
-  background: var(--bg-surface);
-  border-radius: var(--radius-card);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--border-line);
-  transition: transform var(--transition), shadow var(--transition);
-  text-align: left;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 90, 112, 0.1);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-btn);
-  font-weight: 600;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all var(--transition);
-  border: 1px solid transparent;
-}
-
-.btn-primary {
-  background: var(--teal);
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #004a5c;
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background: var(--bg-inner);
-  color: var(--teal);
-  border: 1px solid var(--border-line);
-}
-
-.btn-secondary:hover {
-  background: #e9ecef;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-/* Form Elements */
-input, select, textarea {
-  width: 100%;
-  padding: 0.75rem;
-  background: var(--bg-inner);
-  border: 1px solid var(--border-line);
-  border-radius: var(--radius-btn);
-  color: var(--text-main);
-  font-family: inherit;
-  font-size: 1rem;
-  transition: border-color var(--transition);
-  margin-bottom: 1rem;
-}
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--teal);
-  background: var(--bg-surface);
-}
-
-/* Table Design */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.5rem 0;
-}
-
-th {
-  background: var(--bg-inner);
-  color: var(--rosy);
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 2px solid var(--border-line);
-}
-
-td {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border-line);
-  color: var(--text-main);
-}
-
-tr:hover td {
-  background: var(--bg-inner);
-}
-
-/* ═══════════════════════════════════════════════════════
- *  APP SPECIFIC UTILITIES
- * ═══════════════════════════════════════════════════════ */
-
-/* Navigation Header */
-.nav-header {
-  border-bottom: 1px solid var(--border-line);
-  background: var(--bg-surface);
-  padding: 1rem 0;
-  margin-bottom: 2rem;
-}
-
-.nav-container {
-  max-width: 1152px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav-links {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-link {
-  color: var(--rosy);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.875rem;
-  transition: color var(--transition);
-}
-
-.nav-link:hover {
-  color: var(--teal);
-}
+/* --- KIOSK / SURVEY SPECIFIC --- */
 
 /* Progress Bar */
 .progress-container {
@@ -230,7 +25,7 @@ tr:hover td {
 
 .progress-bar {
   height: 100%;
-  background: var(--teal);
+  background: var(--brand-teal);
   transition: width 0.4s ease-out;
 }
 
@@ -242,7 +37,7 @@ tr:hover td {
   margin-bottom: 0.75rem;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: all var(--transition);
+  transition: all 0.3s ease-out;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -250,24 +45,37 @@ tr:hover td {
 
 .poll-option:hover {
   background: var(--bg-surface);
-  border-color: var(--teal);
+  border-color: var(--brand-teal);
   transform: translateX(4px);
 }
 
-/* Display Board Header */
+/* Ranking Items */
+.ranking-item {
+  cursor: grab;
+}
+.ranking-item:active {
+  cursor: grabbing;
+}
+.drag-handle {
+  cursor: grab;
+}
+
+/* --- DISPLAY / DASHBOARD SPECIFIC --- */
+
 .display-header {
-  background: var(--teal);
+  background: var(--brand-teal);
   color: white;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  border-radius: var(--radius-card);
 }
 
 .display-header h1 {
   color: white;
-  margin: 0;
+  font-size: 2.5rem;
 }
 
 .display-qr-panel {
@@ -275,20 +83,16 @@ tr:hover td {
   align-items: center;
   gap: 2rem;
   background: rgba(255, 255, 255, 0.1);
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: var(--radius-card);
 }
 
 .display-qr-img {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   background: white;
-  padding: 8px;
+  padding: 6px;
   border-radius: 8px;
-}
-
-.display-info {
-  text-align: left;
 }
 
 .display-info .label {
@@ -296,22 +100,25 @@ tr:hover td {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   opacity: 0.8;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
 }
 
 .display-info .value {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-family: 'DM Serif Display', serif;
+  color: white;
 }
 
 .chart-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 /* Ideas List */
 .ideas-list {
-  max-height: 500px;
+  max-height: 400px;
   overflow-y: auto;
   padding-right: 0.5rem;
 }
@@ -333,18 +140,55 @@ tr:hover td {
   padding: 2px 8px;
   border-radius: 4px;
   color: white;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .vote-up { background: var(--success); }
 .vote-down { background: var(--danger); }
 
-/* SVG Icons */
-.icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  fill: currentColor;
+/* --- ADMIN SPECIFIC --- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
 }
 
+th {
+  background: var(--bg-inner);
+  color: var(--brand-rosy);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border-line);
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-line);
+  color: var(--text-main);
+}
+
+tr:hover td {
+  background: var(--bg-inner);
+}
+
+/* Navigation Links (Override for Apex Look) */
+.nav-link {
+  color: var(--brand-rosy);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--brand-teal);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .display-header {
     flex-direction: column;
@@ -359,5 +203,10 @@ tr:hover td {
   .chart-grid {
     grid-template-columns: 1fr;
   }
+  
+  .display-qr-panel {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
 }
-

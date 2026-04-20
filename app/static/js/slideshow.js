@@ -10,6 +10,8 @@ const CHART_COLORS = [
 /* Match --bg-surface from CSS */
 const WORDCLOUD_BG = '#ffffff';
 
+const root = typeof SCRIPT_ROOT !== 'undefined' ? SCRIPT_ROOT : '';
+
 /* Match --text-main and --border-line from CSS */
 const TICK_COLOR = '#1a1a1a';
 const GRID_COLOR = '#e1e4e8';
@@ -29,7 +31,7 @@ const CHARTS_PER_PAGE = 2;
 
 // ─── Entry point ─────────────────────────────────────────────────────────────
 async function updateCharts() {
-    const res = await fetch('/results');
+    const res = await fetch(root + '/results');
     allResults = await res.json();
     buildCarousel();
 }
@@ -315,7 +317,7 @@ function renderIdeas(q) {
 // ─── Tunnel URL ───────────────────────────────────────────────────────────────
 async function updateTunnelUrl() {
     try {
-        const res = await fetch('/static/tunnel_url.txt');
+        const res = await fetch(root + '/static/tunnel_url.txt');
         if (res.ok) {
             const url = await res.text();
             const el = document.getElementById('tunnel-url');

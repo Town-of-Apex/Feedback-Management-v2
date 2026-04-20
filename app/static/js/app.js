@@ -24,6 +24,8 @@ const getEventKey = () => {
     return stored || (typeof EVENT_KEY !== 'undefined' ? EVENT_KEY : null);
 };
 
+const root = typeof SCRIPT_ROOT !== 'undefined' ? SCRIPT_ROOT : '';
+
 async function init() {
     const key = getEventKey();
 
@@ -34,7 +36,7 @@ async function init() {
                 <h2 class="title-font">Welcome</h2>
                 <p>Please scan the QR code to participate on your device, or enter the event key below:</p>
                 <div style="margin: 2rem 0;">
-                    <img src="/static/qr.png" alt="Event QR Code" style="width: 200px; height: 200px; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border-line);">
+                    <img src="${root}/static/qr.png" alt="Event QR Code" style="width: 200px; height: 200px; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border-line);">
                 </div>
                 <form onsubmit="event.preventDefault(); window.location.search = '?key=' + document.getElementById('manual-key').value;">
                     <input type="text" id="manual-key" style="text-align:center; margin-bottom:1rem;" placeholder="ENTER KEY">
@@ -50,7 +52,7 @@ async function init() {
     }
 
     try {
-        const res = await fetch('/questions');
+        const res = await fetch(root + '/questions');
         questions = await res.json();
         renderQuestion();
     } catch (err) {
@@ -82,7 +84,7 @@ function renderKioskStart() {
 }
 
 async function startKiosk() {
-    const res = await fetch('/questions');
+    const res = await fetch(root + '/questions');
     questions = await res.json();
     currentIdx = 0;
     renderQuestion();
@@ -92,7 +94,7 @@ let kioskTimer = null;
 
 async function resetKiosk() {
     if (kioskTimer) clearTimeout(kioskTimer);
-    await fetch('/reset_session', { method: 'POST' });
+    await fetch(root + '/reset_session', { method: 'POST' });
     currentIdx = 0;
     init();
 }
@@ -192,7 +194,7 @@ async function submitSingle(questionId, option) {
     }
 
     const key = getEventKey();
-    const res = await fetch(`/submit?key=${key}`, {
+    const res = await fetch(root + `/submit?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question_id: questionId, selected_options: [option] })
@@ -215,7 +217,7 @@ async function submitMulti(questionId) {
     if (selected.length === 0) return;
 
     const key = getEventKey();
-    const res = await fetch(`/submit?key=${key}`, {
+    const res = await fetch(root + `/submit?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question_id: questionId, selected_options: selected })
@@ -234,7 +236,7 @@ async function submitText(questionId) {
         return;
     }
     const key = getEventKey();
-    const res = await fetch(`/submit?key=${key}`, {
+    const res = await fetch(root + `/submit?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question_id: questionId, text: text })
@@ -263,7 +265,7 @@ async function renderVotingSession(questionId) {
     `;
 
     try {
-        const res = await fetch(`/questions/${questionId}/responses`);
+        const res = await fetch(root + `/questions/${questionId}/responses`);
         const data = await res.json();
         const container = document.getElementById('vote-container');
         
@@ -292,7 +294,7 @@ async function renderVotingSession(questionId) {
 
 async function voteResponse(responseId, voteType, questionId, btn) {
     const key = getEventKey();
-    const res = await fetch(`/vote?key=${key}`, {
+    const res = await fetch(root + `/vote?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ response_id: responseId, vote_type: voteType })
@@ -310,7 +312,7 @@ async function voteResponse(responseId, voteType, questionId, btn) {
 async function submitRanking(questionId) {
     const items = Array.from(document.querySelectorAll('.ranking-item')).map(el => el.getAttribute('data-id'));
     const key = getEventKey();
-    const res = await fetch(`/submit?key=${key}`, {
+    const res = await fetch(root + `/submit?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question_id: questionId, ranking: items })

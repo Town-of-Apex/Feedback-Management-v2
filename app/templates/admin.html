@@ -1,78 +1,93 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
+{% block title %}Admin Dashboard{% endblock %}
+{% block header_title %}Admin Dashboard{% endblock %}
 
-<body>
-    <header class="nav-header">
-        <div class="nav-container">
-            <h1 class="title-font" style="font-size: 1.5rem; margin: 0;">Admin Dashboard</h1>
-            <nav class="nav-links">
-                <a href="/" target="_blank" class="nav-link">Kiosk Mode</a>
-                <a href="/display" target="_blank" class="nav-link">Display Board</a>
-                <a href="/admin/export" class="nav-link">Export Responses</a>
-            </nav>
-        </div>
-    </header>
+{% block content %}
+<div class="card">
+    <p class="metadata">Configuration</p>
+    <h2 class="mt-1">Add New Question</h2>
+    <p class="body-text mt-2">Create a new poll or open-ended question for the event.</p>
 
-    <div class="container">
-        <section class="card">
-            <h2>Add New Question</h2>
-            <form action="/admin/questions/add" method="POST">
-                <input type="text" name="title" placeholder="Question Title" required>
-                <textarea name="description" placeholder="Description (optional)"></textarea>
-                <select name="type">
+    <form action="{{ url_for('admin.add_question') }}" method="POST" class="mt-8">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div>
+                <label class="metadata">Question Title</label>
+                <input type="text" name="title" placeholder="e.g. Rate this event" required class="mt-1">
+            </div>
+            <div>
+                <label class="metadata">Question Type</label>
+                <select name="type" class="mt-1">
                     <option value="single_select">Single Select Poll</option>
                     <option value="multi_select">Multi-Select (Checkboxes)</option>
                     <option value="short_text">Short Text / Idea List</option>
                     <option value="word_cloud">Word Cloud</option>
                     <option value="ranking">Ranking</option>
                 </select>
-                <input type="text" name="options" placeholder="Options (comma separated for polls)">
-                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Add Question</button>
-            </form>
-        </section>
+            </div>
+        </div>
 
-        <section class="card">
-            <h2>Active Questions</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Type</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for q in questions %}
-                    <tr>
-                        <td>{{ q.title }}</td>
-                        <td>{{ q.type }}</td>
-                        <td>
-                            <div style="display: flex; gap: 0.5rem; align-items: center;">
-                                <form action="/admin/questions/{{q.id}}/toggle" method="POST" style="margin: 0;">
-                                    <button type="submit" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">
-                                        {% if q.active %}Deactivate{% else %}Activate{% endif %}
-                                    </button>
-                                </form>
-                                <a href="/admin/questions/{{q.id}}/edit" class="btn btn-secondary" 
-                                   style="padding: 0.4rem 0.8rem; font-size: 0.75rem; text-decoration: none;">Edit</a>
-                                <form action="/admin/questions/{{q.id}}/delete" method="POST"
-                                    style="margin: 0;"
-                                    onsubmit="return confirm('Delete this question and all its responses?');">
-                                    <button type="submit" class="btn btn-secondary" style="color: var(--danger); padding: 0.4rem 0.8rem; font-size: 0.75rem;">Delete</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
+        <div style="margin-bottom: 1.5rem;">
+            <label class="metadata">Description (Optional)</label>
+            <textarea name="description" placeholder="Additional context for voters..." class="mt-1"></textarea>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label class="metadata">Options (Comma separated for polls/ranking)</label>
+            <input type="text" name="options" placeholder="Option A, Option B, Option C" class="mt-1">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Question</button>
+    </form>
+</div>
+
+<div class="card mt-8">
+    <p class="metadata">Live Management</p>
+    <h2 class="mt-1">Active Questions</h2>
+    
+    <div class="mt-8">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for q in questions %}
+                <tr>
+                    <td><strong style="color: var(--brand-teal);">{{ q.title }}</strong></td>
+                    <td><span class="metadata" style="font-size: 0.7rem;">{{ q.type }}</span></td>
+                    <td>
+                        {% if q.active %}
+                        <span style="color: var(--success); font-weight: 600; font-size: 0.8rem;">● Active</span>
+                        {% else %}
+                        <span style="color: var(--brand-rosy); font-weight: 600; font-size: 0.8rem;">○ Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="flex-row">
+                            <form action="{{ url_for('admin.toggle_question', id=q.id) }}" method="POST" style="margin: 0;">
+                                <button type="submit" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.75rem;">
+                                    {% if q.active %}Deactivate{% else %}Activate{% endif %}
+                                </button>
+                            </form>
+                            <a href="{{ url_for('admin.edit_question', id=q.id) }}" class="btn btn-secondary" 
+                               style="padding: 0.5rem 1rem; font-size: 0.75rem;">Edit</a>
+                            <a href="{{ url_for('admin.export_data') }}" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.75rem;">Export</a>
+                            <form action="{{ url_for('admin.delete_question', id=q.id) }}" method="POST"
+                                style="margin: 0;"
+                                onsubmit="return confirm('Delete this question and all its responses?');">
+                                <button type="submit" class="btn btn-secondary" style="color: var(--danger); padding: 0.5rem 1rem; font-size: 0.75rem;">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</body>
-
-</html>
+</div>
+{% endblock %}
