@@ -7,16 +7,16 @@
     <title>{% block title %}{{ event_name or 'Civic Feedback' }}{% endblock %}</title>
 
     <!-- 1. Universal CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/apex-modern.css') }}">
+    <link rel="stylesheet" href="{{ app_root }}/static/css/apex-modern.css">
     <!-- 2. App-specific styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ app_root }}/static/css/style.css">
 
     {% block styles %}{% endblock %}
 </head>
 
 <body>
     <!-- SCRIPT_ROOT for JS -->
-    <script>const SCRIPT_ROOT = "{{ request.script_root }}";</script>
+    <script>const SCRIPT_ROOT = "{{ app_root }}";</script>
 
     <!-- STANDARD HEADER -->
     <header>
@@ -24,7 +24,7 @@
             <div class="header-content"
                 style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                 <div style="display: flex; align-items: center; gap: 1rem;">
-                    <img src="{{ url_for('static', filename='logo.svg') }}" class="app-logo" alt="App Logo">
+                    <img src="{{ app_root }}/static/logo.svg" class="app-logo" alt="App Logo">
                     <h1 class="title-display">{% block header_title %}{{ event_name or 'Feedback Management' }}{%
                         endblock %}</h1>
                 </div>

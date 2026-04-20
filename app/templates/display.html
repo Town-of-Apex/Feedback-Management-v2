@@ -26,7 +26,7 @@
             <div class="label">Step 1: Scan</div>
             <div class="value" id="tunnel-url">Loading...</div>
         </div>
-        <img src="{{ url_for('static', filename='qr.png') }}" alt="Scan to participate" class="display-qr-img">
+        <img src="{{ app_root }}/static/qr.png" alt="Scan to participate" class="display-qr-img">
     </div>
 </div>
 
@@ -37,7 +37,7 @@
 
 {% block scripts %}
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ app_root }}/static/js/charts.js"></script>
 <script>
     const socket = io({ path: SCRIPT_ROOT + '/socket.io' });
     socket.on('new_response', (data) => {
