@@ -14,9 +14,10 @@ def create_app():
     # AAS-1.0: Retrieve BASE_PATH from environment
     base_path = os.getenv('BASE_PATH', '').rstrip('/')
     
-    app = Flask(__name__, static_url_path=base_path + '/static')
+    app = Flask(__name__, static_url_path=base_path + '/static' if base_path else '/static')
     
     # Handle reverse proxy headers (AAS-1.0 requirement)
+    # This allows url_for to automatically prepend the X-Forwarded-Prefix
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
     
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret')
@@ -24,7 +25,8 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
-    socketio.init_app(app, cors_allowed_origins="*")
+    # AAS-1.0: Ensure socketio respects the sub-path
+    socketio.init_app(app, cors_allowed_origins="*", path=base_path + '/socket.io' if base_path else '/socket.io')
 
     with app.app_context():
         from . import models
@@ -34,14 +36,17 @@ def create_app():
     from .routes.admin import admin_bp
     from .routes.display import display_bp
     
-    # AAS-1.0: Register blueprints with prepended BASE_PATH
+    # AAS-1.0: Register blueprints with prepended BASE_PATH (Traefik-friendly)
     app.register_blueprint(public_bp, url_prefix=base_path if base_path else '/')
     app.register_blueprint(admin_bp, url_prefix=base_path + '/admin')
     app.register_blueprint(display_bp, url_prefix=base_path + '/display')
 
+    # Inject BASE_PATH into templates for explicit asset prefixing
+    app.jinja_env.globals['BASE_PATH'] = base_path
+    
+    # AAS-1.0: Inject global base path variables for templates (legacy support if needed)
     @app.context_processor
     def inject_vars():
-        # AAS-1.0: Inject base path variables for templates
         return dict(
             base_url=base_path + '/' if base_path else '/',
             app_base_path=base_path

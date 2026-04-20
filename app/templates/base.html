@@ -7,19 +7,19 @@
     <title>{% block title %}{{ event_name or 'Civic Feedback' }}{% endblock %}</title>
 
     <!-- Handle sub-path routing by setting the base URL for all relative links -->
-    <base href="{{ base_url }}">
+    <base href="{{ BASE_PATH }}/">
 
-    <!-- 1. Universal CSS (Relative to <base>) -->
-    <link rel="stylesheet" href="static/css/apex-modern.css">
-    <!-- 2. App-specific styles (Relative to <base>) -->
-    <link rel="stylesheet" href="static/css/style.css">
+    <!-- 1. Universal CSS (Explicit Path) -->
+    <link rel="stylesheet" href="{{ BASE_PATH }}/static/css/apex-modern.css">
+    <!-- 2. App-specific styles (Explicit Path) -->
+    <link rel="stylesheet" href="{{ BASE_PATH }}/static/css/style.css">
 
     {% block styles %}{% endblock %}
 </head>
 
 <body>
     <!-- AAS-1.0: Inject global base path for Javascript -->
-    <script>window.APP_BASE_PATH = "{{ app_base_path }}";</script>
+    <script>window.APP_BASE_PATH = "{{ BASE_PATH }}";</script>
 
     <!-- STANDARD HEADER -->
     <header>
@@ -27,7 +27,7 @@
             <div class="header-content"
                 style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
                 <div style="display: flex; align-items: center; gap: 1rem;">
-                    <img src="static/logo.svg" class="app-logo" alt="App Logo">
+                    <img src="{{ BASE_PATH }}/static/logo.svg" class="app-logo" alt="App Logo">
                     <h1 class="title-display">{% block header_title %}{{ event_name or 'Feedback Management' }}{%
                         endblock %}</h1>
                 </div>
