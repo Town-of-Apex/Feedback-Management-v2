@@ -19,7 +19,7 @@ const CHART_COLORS = [
 /* Match --bg-surface from CSS */
 const WORDCLOUD_BG = '#ffffff';
 
-const root = typeof SCRIPT_ROOT !== 'undefined' ? SCRIPT_ROOT : '';
+const root = typeof APP_BASE_PATH !== 'undefined' ? APP_BASE_PATH : '';
 
 /* Match --text-main and --border-line from CSS */
 const TICK_COLOR = '#1a1a1a';

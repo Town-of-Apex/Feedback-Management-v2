@@ -115,7 +115,7 @@
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="static/js/slideshow.js"></script>
 <script>
-    const socket = io({ path: SCRIPT_ROOT + '/socket.io' });
+    const socket = io({ path: (window.APP_BASE_PATH || '') + '/socket.io' });
     socket.on('new_response', (data) => {
         console.log('Update received for question:', data.question_id);
         if (window.updateCharts) window.updateCharts();

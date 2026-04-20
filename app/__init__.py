@@ -13,23 +13,11 @@ socketio = SocketIO()
 def create_app():
     app = Flask(__name__)
     
-    # Handle reverse proxy headers
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+    # AAS-1.0: Retrieve BASE_PATH from environment
+    base_path = os.getenv('BASE_PATH', '').rstrip('/')
     
-    # If APPLICATION_ROOT is set, handle it flexibly
-    app_root = os.getenv('APPLICATION_ROOT', '/feedback').rstrip('/')
-    if app_root and app_root != '/':
-        def prefix_middleware(environ, start_response):
-            path = environ.get('PATH_INFO', '')
-            # Fix: always set SCRIPT_NAME so url_for includes the prefix
-            environ['SCRIPT_NAME'] = app_root
-            # Fix: only strip PATH_INFO if it actually contains the prefix
-            if path.startswith(app_root):
-                environ['PATH_INFO'] = path[len(app_root):]
-                if not environ['PATH_INFO'].startswith('/'):
-                    environ['PATH_INFO'] = '/' + environ['PATH_INFO']
-            return app.wsgi_app(environ, start_response)
-        app.wsgi_app = prefix_middleware
+    # Handle reverse proxy headers (AAS-1.0 requirement)
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
     
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret')
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.getcwd(), 'data', 'feedback.db')
@@ -46,20 +34,17 @@ def create_app():
     from .routes.admin import admin_bp
     from .routes.display import display_bp
     
-    app.register_blueprint(public_bp)
-    app.register_blueprint(admin_bp, url_prefix='/admin')
-    app.register_blueprint(display_bp, url_prefix='/display')
+    # AAS-1.0: Register blueprints with prepended BASE_PATH
+    app.register_blueprint(public_bp, url_prefix=base_path if base_path else '/')
+    app.register_blueprint(admin_bp, url_prefix=base_path + '/admin')
+    app.register_blueprint(display_bp, url_prefix=base_path + '/display')
 
     @app.context_processor
     def inject_vars():
-        # Force script_root if APPLICATION_ROOT is set
-        # Default to '/feedback' if not specified, as this is the user's standard hub route
-        root = os.getenv('APPLICATION_ROOT', '/feedback').rstrip('/')
-        
-        # Ensure base_url ends with a slash for the <base> tag
+        # AAS-1.0: Inject base path variables for templates
         return dict(
-            base_url=root + '/',
-            script_root=root
+            base_url=base_path + '/' if base_path else '/',
+            app_base_path=base_path
         )
     
     return app
