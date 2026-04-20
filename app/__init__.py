@@ -11,10 +11,10 @@ db = SQLAlchemy()
 socketio = SocketIO()
 
 def create_app():
-    app = Flask(__name__)
-    
     # AAS-1.0: Retrieve BASE_PATH from environment
     base_path = os.getenv('BASE_PATH', '').rstrip('/')
+    
+    app = Flask(__name__, static_url_path=base_path + '/static')
     
     # Handle reverse proxy headers (AAS-1.0 requirement)
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
