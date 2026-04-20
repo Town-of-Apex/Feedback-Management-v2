@@ -50,7 +50,10 @@ def create_app():
     @app.context_processor
     def inject_vars():
         # Force script_root if APPLICATION_ROOT is set
-        root = os.getenv('APPLICATION_ROOT', '').rstrip('/')
+        # Default to '/feedback' if not specified, as this is the user's standard hub route
+        root = os.getenv('APPLICATION_ROOT', '/feedback').rstrip('/')
+        
+        # Ensure base_url ends with a slash for the <base> tag
         return dict(
             base_url=root + '/',
             script_root=root
