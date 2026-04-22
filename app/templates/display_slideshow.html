@@ -7,11 +7,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
 <style>
     /* Override base styles: lock the page to viewport, no scrolling ever */
-    html, body {
+    html,
+    body {
         height: 100%;
         overflow: hidden;
     }
-    
+
     .main-content {
         padding-top: 1rem;
         padding-bottom: 1rem;
@@ -50,7 +51,8 @@
         margin-bottom: 0;
         min-height: 0;
         overflow: hidden;
-        padding: 2rem; /* slightly less padding for slideshow */
+        padding: 2rem;
+        /* slightly less padding for slideshow */
     }
 
     .carousel-page .card canvas {
@@ -92,14 +94,16 @@
 <div class="display-header" style="padding: 1.5rem 2rem; margin-bottom: 1rem;">
     <div>
         <h1 style="color: white; margin: 0; font-size: 1.5rem;">{{ event_name }}</h1>
-        <p style="opacity: 0.8; margin-top: 0.25rem; color: white; font-size: 0.8rem;">Live Community Feedback (Slideshow)</p>
+        <p style="opacity: 0.8; margin-top: 0.25rem; color: white; font-size: 0.8rem;">Live Community Feedback
+            (Slideshow)</p>
     </div>
     <div class="display-qr-panel" style="padding: 0.5rem 1rem;">
         <div class="display-info">
-            <div class="label" style="font-size: 0.65rem;">Step 1: Scan</div>
+            <div class="label" style="font-size: 0.65rem;">Scan to Participate</div>
             <div class="value" id="tunnel-url" style="font-size: 1rem;">Loading...</div>
         </div>
-        <img src="{{ BASE_PATH }}/static/qr.png" alt="Scan to participate" class="display-qr-img" style="width: 60px; height: 60px;">
+        <img src="{{ BASE_PATH }}/static/qr.png" alt="Scan to participate" class="display-qr-img"
+            style="width: 60px; height: 60px;">
     </div>
 </div>
 

@@ -199,7 +199,7 @@ function renderIdeas(q, container) {
                     </span>` : ''}
                 ${idea.votes_down > 0 ? `
                     <span class="vote-badge vote-down" style="display:flex; align-items:center; gap:4px;">
-                        <svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:3;" stroke-linecap round stroke-linejoin="round"><path d="M12 5v14M12 19l-7-7M12 19l7-7"/></svg>
+                        <svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:3;" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M12 19l-7-7M12 19l7-7"/></svg>
                         ${idea.votes_down}
                     </span>` : ''}
             </div>
@@ -211,19 +211,6 @@ function renderIdeas(q, container) {
 async function updateTunnelUrl() {
     try {
         const res = await fetch(root + '/static/tunnel_url.txt');
-        if (res.ok) {
-            const url = await res.text();
-            document.getElementById('tunnel-url').innerText = url.trim();
-        }
-    } catch (e) {
-        console.log("Tunnel URL file not found yet.");
-    }
-}
-
-window.updateCharts = updateCharts;
-updateCharts();
-updateTunnelUrl();
-setInterval(updateTunnelUrl, 30000);('/static/tunnel_url.txt');
         if (res.ok) {
             const url = await res.text();
             document.getElementById('tunnel-url').innerText = url.trim();
