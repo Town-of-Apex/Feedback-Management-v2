@@ -17,6 +17,8 @@ services:
       - "traefik.http.routers.feedback.rule=PathPrefix(`/feedback`)"
       # PORT: Tell Traefik the app listens on 8080
       - "traefik.http.services.feedback.loadbalancer.server.port=8080"
+    ports:
+      - "8080:8080"
 
 networks:
   apex-internal:
