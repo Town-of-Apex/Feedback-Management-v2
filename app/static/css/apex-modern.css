@@ -90,7 +90,11 @@ h1 {
 }
 
 h2 {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1rem;
 }
 
 p,
@@ -141,7 +145,7 @@ header {
     background: var(--bg-surface);
     border: 1px solid var(--border-line);
     border-radius: var(--radius-card);
-    padding: 2.5rem;
+    padding: 1.5rem;
     transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 
