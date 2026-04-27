@@ -14,9 +14,12 @@ services:
     labels:
       - "traefik.enable=true"
       # ROUTE: Match anything starting with /feedback
-      - "traefik.http.routers.feedback.rule=PathPrefix(`/feedback`)"
+      - "traefik.http.routers.feedback-v2.rule=PathPrefix(`/feedback`)"
+      - "traefik.http.routers.feedback-v2.entrypoints=web" # Default for many Apex setups, change if yours is different
       # PORT: Tell Traefik the app listens on 8080
-      - "traefik.http.services.feedback.loadbalancer.server.port=8080"
+      - "traefik.http.services.feedback-v2.loadbalancer.server.port=8080"
+      # NETWORK: Explicitly tell Traefik to use the internal network for routing
+      - "traefik.docker.network=apex-internal"
     ports:
       - "8080:8080"
 
