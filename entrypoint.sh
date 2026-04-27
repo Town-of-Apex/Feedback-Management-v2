@@ -10,23 +10,22 @@ sleep 2
 # Seed the database
 python seed.py
 
-# Start the localhost.run tunnel in a background loop to keep it alive
-echo "Starting localhost.run tunnel manager..."
+# Start the cloudflared tunnel in a background loop
+echo "Starting Cloudflare Quick Tunnel..."
 
 (
-    # Continuous tunnel loop
     while true; do
-        # Clear the log for this session
         > tunnel.log
         
-        # Launch SSH tunnel. Keepalive prevents silent drops
-        ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -R 80:localhost:8080 nokey@localhost.run > tunnel.log 2>&1 &
-        ssh_pid=$!
+        # Start a quick tunnel (anonymous, free, no account)
+        cloudflared tunnel --url http://localhost:8080 > tunnel.log 2>&1 &
+        cf_pid=$!
         
         # Wait for the URL to appear in the log
         TUNNEL_URL=""
         for i in {1..30}; do
-            TUNNEL_URL=$(grep -oE "https://[a-zA-Z0-9.-]+\.lhr\.life|https://[a-zA-Z0-9.-]+\.localhost\.run|https://[a-zA-Z0-9.-]+\.lhr\.pro" tunnel.log | grep -v "admin" | tail -n 1)
+            # Cloudflare URLs look like: https://something.trycloudflare.com
+            TUNNEL_URL=$(grep -oE "https://[a-zA-Z0-9.-]+\.trycloudflare\.com" tunnel.log | tail -n 1)
             if [ -n "$TUNNEL_URL" ]; then
                 break
             fi
@@ -43,13 +42,14 @@ echo "Starting localhost.run tunnel manager..."
             
             echo "Tunnel Up: $FULL_URL"
         else
-            echo "Could not parse tunnel URL. Check tunnel.log"
+            echo "Could not parse Cloudflare URL. Content of tunnel.log:"
+            cat tunnel.log
         fi
         
-        # Wait until the SSH process dies before restarting
-        wait $ssh_pid
-        echo "Tunnel connection lost. Reconnecting in 3s..."
-        sleep 3
+        # Wait until the process dies before restarting
+        wait $cf_pid
+        echo "Tunnel connection lost. Reconnecting in 5s..."
+        sleep 5
     done
 ) &
 
