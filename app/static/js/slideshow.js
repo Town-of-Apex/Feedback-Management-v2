@@ -314,14 +314,27 @@ function renderIdeas(q) {
     }
 }
 
+let lastTunnelUrl = '';
+
+function refreshQrImage(cacheKey) {
+    const qr = document.getElementById('tunnel-qr');
+    if (!qr) return;
+    const key = encodeURIComponent(cacheKey || String(Date.now()));
+    qr.src = `${root}/static/qr.png?v=${key}`;
+}
+
 // ─── Tunnel URL ───────────────────────────────────────────────────────────────
 async function updateTunnelUrl() {
     try {
         const res = await fetch(root + '/static/tunnel_url.txt');
         if (res.ok) {
-            const url = await res.text();
+            const url = (await res.text()).trim();
             const el = document.getElementById('tunnel-url');
-            if (el) el.innerText = url.trim();
+            if (el) el.innerText = url;
+            if (url && url !== lastTunnelUrl) {
+                lastTunnelUrl = url;
+                refreshQrImage(url);
+            }
         }
     } catch (e) {
     }

@@ -1,0 +1,2 @@
+# Shell scripts must use LF so Docker/Linux shebangs work when built on Windows
+*.sh text eol=lf
