@@ -91,19 +91,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="display-header" style="padding: 1.5rem 2rem; margin-bottom: 1rem;">
+<div class="display-header">
     <div>
-        <h1 style="color: white; margin: 0; font-size: 1.5rem;">{{ event_name }}</h1>
-        <p style="opacity: 0.8; margin-top: 0.25rem; color: white; font-size: 0.8rem;">Live Community Feedback
-            (Slideshow)</p>
+        <h1 style="color: white; margin: 0;">{{ event_name }}</h1>
+        <p style="opacity: 0.8; margin-top: 0.5rem; color: white;">Live Feedback (Slideshow)</p>
     </div>
-    <div class="display-qr-panel" style="padding: 0.5rem 1rem;">
+    <div class="display-qr-panel">
         <div class="display-info">
-            <div class="label" style="font-size: 0.65rem;">Scan to Participate</div>
-            <div class="value" id="tunnel-url" style="font-size: 1rem;">Loading...</div>
+            <div class="value">Scan to Participate</div>
         </div>
-        <img src="{{ BASE_PATH }}/static/qr.png" alt="Scan to participate" class="display-qr-img"
-            style="width: 60px; height: 60px;">
+        <img src="{{ BASE_PATH }}/static/qr.png" alt="Scan to participate" class="display-qr-img">
     </div>
 </div>
 
