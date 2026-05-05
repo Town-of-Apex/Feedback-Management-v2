@@ -13,8 +13,9 @@
         overflow: hidden;
     }
 
+    /* Match display.html main-content padding; keep slideshow flex layout */
     .main-content {
-        padding-top: 1rem;
+        padding-top: 1.5rem;
         padding-bottom: 1rem;
         overflow: hidden;
         display: flex;
@@ -94,13 +95,13 @@
 <div class="display-header">
     <div>
         <h1 style="color: white; margin: 0;">{{ event_name }}</h1>
-        <p style="opacity: 0.8; margin-top: 0.5rem; color: white;">Live Feedback (Slideshow)</p>
+        <p style="opacity: 0.8; margin-top: 0.5rem; color: white;">Live Feedback</p>
     </div>
     <div class="display-qr-panel">
         <div class="display-info">
             <div class="value">Scan to Participate</div>
         </div>
-        <img src="{{ BASE_PATH }}/static/qr.png" alt="Scan to participate" class="display-qr-img">
+        <img id="tunnel-qr" src="{{ BASE_PATH }}/static/qr.png" alt="Scan to participate" class="display-qr-img">
     </div>
 </div>
 

@@ -26,6 +26,14 @@ const TICK_COLOR = '#1a1a1a';
 const GRID_COLOR = '#e1e4e8';
 
 let pollCharts = {};
+let lastTunnelUrl = '';
+
+function refreshQrImage(cacheKey) {
+    const qr = document.getElementById('tunnel-qr');
+    if (!qr) return;
+    const key = encodeURIComponent(cacheKey || String(Date.now()));
+    qr.src = `${root}/static/qr.png?v=${key}`;
+}
 
 async function updateCharts() {
     const res = await fetch(root + '/results');
@@ -212,8 +220,15 @@ async function updateTunnelUrl() {
     try {
         const res = await fetch(root + '/static/tunnel_url.txt');
         if (res.ok) {
-            const url = await res.text();
-            document.getElementById('tunnel-url').innerText = url.trim();
+            const url = (await res.text()).trim();
+            const tunnelEl = document.getElementById('tunnel-url');
+            if (tunnelEl) {
+                tunnelEl.innerText = url;
+            }
+            if (url && url !== lastTunnelUrl) {
+                lastTunnelUrl = url;
+                refreshQrImage(url);
+            }
         }
     } catch (e) {
         console.log("Tunnel URL file not found yet.");
