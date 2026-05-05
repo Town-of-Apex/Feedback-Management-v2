@@ -53,9 +53,11 @@
 .ranking-item {
   cursor: grab;
 }
+
 .ranking-item:active {
   cursor: grabbing;
 }
+
 .drag-handle {
   cursor: grab;
 }
@@ -88,8 +90,8 @@
 }
 
 .display-qr-img {
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   background: white;
   padding: 6px;
   border-radius: 8px;
@@ -145,8 +147,13 @@
   gap: 4px;
 }
 
-.vote-up { background: var(--success); }
-.vote-down { background: var(--danger); }
+.vote-up {
+  background: var(--success);
+}
+
+.vote-down {
+  background: var(--danger);
+}
 
 /* --- ADMIN SPECIFIC --- */
 
@@ -195,15 +202,15 @@ tr:hover td {
     text-align: center;
     gap: 1.5rem;
   }
-  
+
   .display-header h1 {
     text-align: center;
   }
-  
+
   .chart-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .display-qr-panel {
     flex-direction: column;
     gap: 1rem;
