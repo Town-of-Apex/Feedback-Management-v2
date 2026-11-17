@@ -1,5 +1,7 @@
 # Feedback Management v2
 
+## Status: Archived prototype/proof-of-concept
+
 A dynamic, real-time feedback and polling system built with Flask, SQLAlchemy, Docker, and WebSocket integration. It's designed for live events, civic meetings, and interactive presentations where audiences can provide real-time responses.
 
 ## Features

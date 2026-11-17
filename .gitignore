@@ -1,12 +1,125 @@
-# Python-generated files
+# Python
 __pycache__/
-*.py[oc]
+*.py[cod]
+*$py.class
+*.so
+.Python
 build/
+develop-eggs/
 dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
 wheels/
-*.egg-info
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-wheel-metadata/
 
-# Virtual environments
-.venv
+# Test, type-check, and lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Virtual environments and local env files
+.venv/
+venv/
+env/
+ENV/
 .env
-.env.example
+.env.*
+!.env.example
+
+# uv (lockfile uv.lock stays tracked)
+.uv/
+
+# Operational data
+# Live SQLite workshop/event database and its journal files.
+# The empty data/ directory is kept via data/.gitkeep.
+data/*
+!data/.gitkeep
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Admin CSV exports (default download name from /admin/export)
+feedback_responses*.csv
+exports/
+
+# Runtime tunnel artifacts
+# qr.png and tunnel_url.txt embed EVENT_KEY. Do not commit them.
+tunnel.log
+*.log
+logs/
+app/static/tunnel_url.txt
+app/static/qr.png
+
+# Model weights and local ML artifacts
+*.pt
+*.pth
+*.onnx
+*.ckpt
+*.safetensors
+*.pkl
+*.pickle
+*.joblib
+*.h5
+*.hdf5
+models/*
+!models/.gitkeep
+
+# Local uploads, scratch media, and ad-hoc test images
+uploads/
+tmp/
+temp/
+*.local.png
+*.local.jpg
+*.local.jpeg
+*.local.webp
+
+# Secrets and credentials
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_rsa.pub
+credentials.json
+secrets.json
+*.secret
+
+# Local Docker overrides (compose file itself stays tracked)
+docker-compose.override.yml
+.docker/
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
